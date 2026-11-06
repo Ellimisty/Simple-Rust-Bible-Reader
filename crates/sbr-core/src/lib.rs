@@ -1,6 +1,7 @@
 //! Port of the non-UI core of Simple Bible Reader 5.6.2.
 
 pub mod bible_format;
+pub mod chapter_heading;
 pub mod dotnet;
 pub mod format_util;
 pub mod formats;
@@ -8,6 +9,7 @@ pub mod global_memory;
 pub mod io;
 pub mod localization;
 pub mod post_process;
+pub mod versification;
 
 pub const AUTHOR_WEBSITE: &str = "trumpet-call.org/simplebiblereader/";
 
