@@ -1,0 +1,9 @@
+[package]
+name = "sbr-rtf"
+description = "RTF to HTML/text conversion (port of RtfPipe)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror.workspace = true

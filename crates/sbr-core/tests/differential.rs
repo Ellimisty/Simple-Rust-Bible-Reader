@@ -38,7 +38,7 @@ fn matches_original() {
         (src.as_str(), 1, 3, "txt", "expected/out_3.txt"),
         (ub2.as_str(), 2, 1, "xml", "expected/out_2_1.xml"),
         (ub3.as_str(), 3, 1, "xml", "expected/out_3_1.xml"),
-        (ub2.as_str(), 0, 2, "txt", "expected/out_2_2.txt"),
+        (ub2.as_str(), 2, 2, "txt", "expected/out_2_2.txt"),
         (ub3.as_str(), 3, 3, "txt", "expected/out_3_3.txt"),
         (src.as_str(), 0, 12, "vpl", "expected/out_12.vpl"),
         (vpl.as_str(), 12, 12, "vpl", "expected/out_12_12.vpl"),

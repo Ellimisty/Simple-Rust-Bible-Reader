@@ -1,7 +1,10 @@
 //! Port of the non-UI core of Simple Bible Reader 5.6.2.
 
 pub mod bible_format;
+pub mod book;
 pub mod chapter_heading;
+pub mod commentary;
+pub mod dictionary;
 pub mod dotnet;
 pub mod format_util;
 pub mod formats;

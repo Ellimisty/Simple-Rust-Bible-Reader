@@ -269,3 +269,89 @@ mod tests {
         assert_eq!(zefania_book_no_to_index(904), 92);
     }
 }
+
+const RTF_HEADER: &str = "{\\rtf1\\ansi\n";
+
+/// `FormatUtil.convertHtmlToRtf` (regex method). As in the original, the
+/// hyperlink colour table is never emitted.
+pub fn convert_html_to_rtf(html: &str, rtf_header: Option<&str>) -> String {
+    const RULES: &[(&str, &str)] = &[
+        (
+            r"(?i)<(?:hr)(?:\s+[^>]*)?\s*[\/]?>",
+            "{\\pard \\brdrb \\brdrs \\brdrw10 \\brsp20 \\par}\n{\\pard\\par}\n",
+        ),
+        (r"(?i)<(?:br)(?:\s+[^>]*)?\s*[\/]?>", "{\\pard\\par}\n"),
+        (
+            r"(?i)<(?:p|div|section|article)(?:\s+[^>]*)?\s*[\/]>",
+            "{\\pard\\par}\n",
+        ),
+        (r"<(?:[^>]+)\/>", ""),
+        (
+            r#"(?i)<a(?:\s+[^>]*)?(?:\s+href=(["'])(?:javascript:void\(0?\);?|#|return false;?|void\(0?\);?|)\1)(?:\s+[^>]*)?>"#,
+            "{{{\n",
+        ),
+        (r"<a(?:\s+[^>]*)?>", "{{{\n"),
+        (r"<\/a(?:\s+[^>]*)?>", "\n}}}"),
+        (r"<(?:b|strong)(?:\s+[^>]*)?>", "{\\b\n"),
+        (r"<(?:i|em)(?:\s+[^>]*)?>", "{\\i\n"),
+        (r"<(?:u|ins)(?:\s+[^>]*)?>", "{\\ul\n"),
+        (r"<(?:strike|del)(?:\s+[^>]*)?>", "{\\strike\n"),
+        (r"<sup(?:\s+[^>]*)?>", "{\\super\n"),
+        (r"<sub(?:\s+[^>]*)?>", "{\\sub\n"),
+        (r"<(?:p|div|section|article)(?:\s+[^>]*)?>", "{\\pard\n"),
+        (r"<h[1-6](?:\s+[^>]*)?>", "{\\b\n"),
+        (r"<\/(?:h[1-6])(?:\s+[^>]*)?>", "\n}"),
+        (r"<br[\/]>", "\\line\n"),
+        (r"<\/(?:p|div|section|article)(?:\s+[^>]*)?>", "\n\\par}\n"),
+        (
+            r"<\/(?:b|strong|i|em|u|ins|strike|del|sup|sub)(?:\s+[^>]*)?>",
+            "\n}",
+        ),
+        (r"<(?:[^>]+)>", ""),
+    ];
+    let mut text = html.to_string();
+    for (pat, rep) in RULES {
+        let re = fancy_regex::Regex::new(pat).expect("valid pattern");
+        text = re
+            .replace_all(&text, fancy_regex::NoExpand(rep))
+            .into_owned();
+    }
+    format!("{}{}\n}}", rtf_header.unwrap_or(RTF_HEADER), text)
+}
+
+/// `FormatUtil.convertRtfToHtml`: RtfPipe, falling back to plain text.
+pub fn convert_rtf_to_html(rtf: &str) -> String {
+    if rtf.trim().is_empty()
+        || !(rtf.contains("{\\") || rtf.starts_with('\\') || rtf.contains("\\cf"))
+    {
+        return rtf.to_string();
+    }
+    let full = if rtf.starts_with("{\\rtf1") {
+        rtf.to_string()
+    } else {
+        format!("{RTF_HEADER}{rtf}")
+    };
+    sbr_rtf::to_html(&full)
+        .or_else(|_| sbr_rtf::to_text(&full))
+        .unwrap_or_else(|_| rtf.to_string())
+}
+
+#[cfg(test)]
+mod rtf_tests {
+    use super::convert_html_to_rtf;
+
+    #[test]
+    fn html_to_rtf_matches_original() {
+        // Captured from FormatUtil.convertHtmlToRtf under Mono.
+        let cases = [
+            ("<b>x</b><br/>y", "{\\rtf1\\ansi\n{\\b\nx\n}{\\pard\\par}\ny\n}"),
+            ("<P>a<i>b</I></p><hr>", "{\\rtf1\\ansi\na{\\i\nb\n\\par}\n{\\pard \\brdrb \\brdrs \\brdrw10 \\brsp20 \\par}\n{\\pard\\par}\n\n}"),
+            ("<a href=\"#\">l</a> <a href='x'>m</a>", "{\\rtf1\\ansi\n{{{\nl\n}}} {{{\nm\n}}}\n}"),
+            ("<h2 class=\"t\">H</h2><sup>1</sup><span>s</span><br/>", "{\\rtf1\\ansi\n{\\b\nH\n}{\\super\n1\n}s{\\pard\\par}\n\n}"),
+            ("<div/><img src='a'/>&amp;", "{\\rtf1\\ansi\n{\\pard\\par}\n&amp;\n}"),
+        ];
+        for (html, want) in cases {
+            assert_eq!(convert_html_to_rtf(html, None), want, "{html}");
+        }
+    }
+}

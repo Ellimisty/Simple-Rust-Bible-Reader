@@ -84,3 +84,12 @@ Save its outputs under `crates/sbr-core/tests/fixtures/expected/` and add a
 case to `tests/differential.rs`. Mono differences: `Environment.NewLine` is
 `\n`, `Encoding.Default` is UTF-8 (Windows-1252 on .NET Framework), and
 OleDb (Access `.mdb`) is unavailable.
+
+## Layout for parallel porting
+
+Every Bible format id is wired in `bible_format.rs` to `formats/<name>.rs`;
+unported modules return `Error::Unsupported`. Commentary, dictionary and book
+formats live under `src/commentary/`, `src/dictionary/` and `src/book/`;
+RtfPipe is `crates/sbr-rtf` and the SWORD engine `crates/sbr-sword`. Per-family
+notes (deviations, original bugs, Mono limitations) go in
+`docs/porting/<family>.md`.

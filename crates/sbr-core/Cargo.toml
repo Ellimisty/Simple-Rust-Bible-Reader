@@ -7,8 +7,11 @@ license.workspace = true
 
 [dependencies]
 sbr-xml.workspace = true
+sbr-rtf.workspace = true
+sbr-sword.workspace = true
 fancy-regex.workspace = true
 encoding_rs.workspace = true
 thiserror.workspace = true
 rusqlite.workspace = true
 flate2.workspace = true
+zip.workspace = true
