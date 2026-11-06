@@ -252,7 +252,7 @@ enum Axis {
     Following,
     Preceding,
     Attribute,
-    SelfAxis,
+    Self_,
     Namespace,
 }
 
@@ -433,7 +433,7 @@ impl P {
 
     fn step(&mut self) -> Result<Step, XPathError> {
         if self.eat(&Tok::Dot) {
-            return Ok(Step { axis: Axis::SelfAxis, test: Test::Node, preds: vec![] });
+            return Ok(Step { axis: Axis::Self_, test: Test::Node, preds: vec![] });
         }
         if self.eat(&Tok::DDot) {
             return Ok(Step { axis: Axis::Parent, test: Test::Node, preds: vec![] });
@@ -456,7 +456,7 @@ impl P {
                 "following" => Axis::Following,
                 "preceding" => Axis::Preceding,
                 "attribute" => Axis::Attribute,
-                "self" => Axis::SelfAxis,
+                "self" => Axis::Self_,
                 "namespace" => Axis::Namespace,
                 _ => return self.err(),
             };
@@ -776,7 +776,7 @@ impl<'a> Ctx<'a> {
             Axis::Attribute => {
                 out.extend(d.attributes(n).iter().copied().filter(|&a| d.namespace_uri(a) != XMLNS_NS));
             }
-            Axis::SelfAxis => out.push(n),
+            Axis::Self_ => out.push(n),
             Axis::Namespace => {}
         }
     }
@@ -800,7 +800,7 @@ impl<'a> Ctx<'a> {
             }
             result.extend(sel);
         }
-        let keeps_flat = matches!(step.axis, Axis::Child | Axis::Attribute | Axis::SelfAxis);
+        let keeps_flat = matches!(step.axis, Axis::Child | Axis::Attribute | Axis::Self_);
         if input.len() <= 1 {
             Ok((result, keeps_flat || matches!(step.axis, Axis::Parent)))
         } else if ordered_flat && keeps_flat {
