@@ -74,7 +74,17 @@ fn lex(src: &str) -> Result<Vec<Tok>, XPathError> {
         // whether the preceding token forces operator interpretation
         let op_ctx = match out.last() {
             None => false,
-            Some(Tok::At | Tok::DColon | Tok::LPar | Tok::LBr | Tok::Comma | Tok::Op(_) | Tok::Slash | Tok::DSlash | Tok::Pipe) => false,
+            Some(
+                Tok::At
+                | Tok::DColon
+                | Tok::LPar
+                | Tok::LBr
+                | Tok::Comma
+                | Tok::Op(_)
+                | Tok::Slash
+                | Tok::DSlash
+                | Tok::Pipe,
+            ) => false,
             Some(_) => true,
         };
         match c {
@@ -215,14 +225,23 @@ fn lex(src: &str) -> Result<Vec<Tok>, XPathError> {
                 while j < cs.len() && matches!(cs[j], ' ' | '\t' | '\n' | '\r') {
                     j += 1;
                 }
-                if prefix.is_none() && local != "*" && cs.get(j) == Some(&':') && cs.get(j + 1) == Some(&':') {
+                if prefix.is_none()
+                    && local != "*"
+                    && cs.get(j) == Some(&':')
+                    && cs.get(j + 1) == Some(&':')
+                {
                     out.push(Tok::Axis(local));
                 } else if cs.get(j) == Some(&'(') && local != "*" {
                     let full = match &prefix {
                         Some(p) => format!("{p}:{local}"),
                         None => local.clone(),
                     };
-                    if prefix.is_none() && matches!(local.as_str(), "node" | "text" | "comment" | "processing-instruction") {
+                    if prefix.is_none()
+                        && matches!(
+                            local.as_str(),
+                            "node" | "text" | "comment" | "processing-instruction"
+                        )
+                    {
                         out.push(Tok::NodeType(local));
                     } else {
                         out.push(Tok::Func(full));
@@ -258,7 +277,14 @@ enum Axis {
 
 impl Axis {
     fn reverse(self) -> bool {
-        matches!(self, Axis::Ancestor | Axis::AncestorOrSelf | Axis::PrecedingSibling | Axis::Preceding | Axis::Parent)
+        matches!(
+            self,
+            Axis::Ancestor
+                | Axis::AncestorOrSelf
+                | Axis::PrecedingSibling
+                | Axis::Preceding
+                | Axis::Parent
+        )
     }
 }
 
@@ -327,7 +353,13 @@ impl P {
     }
 
     fn binary(&mut self, level: usize) -> Result<Expr, XPathError> {
-        const LEVELS: [&[&str]; 5] = [&["or"], &["and"], &["=", "!="], &["<", ">", "<=", ">="], &["+", "-"]];
+        const LEVELS: [&[&str]; 5] = [
+            &["or"],
+            &["and"],
+            &["=", "!="],
+            &["<", ">", "<=", ">="],
+            &["+", "-"],
+        ];
         if level == LEVELS.len() {
             return self.multiplicative();
         }
@@ -407,7 +439,18 @@ impl P {
     }
 
     fn starts_step(&self) -> bool {
-        matches!(self.peek(), Some(Tok::Name(..) | Tok::Star | Tok::At | Tok::Dot | Tok::DDot | Tok::Axis(_) | Tok::NodeType(_)))
+        matches!(
+            self.peek(),
+            Some(
+                Tok::Name(..)
+                    | Tok::Star
+                    | Tok::At
+                    | Tok::Dot
+                    | Tok::DDot
+                    | Tok::Axis(_)
+                    | Tok::NodeType(_)
+            )
+        )
     }
 
     /// Parses `step (('/'|'//') step)*`; if `lead_sep`, a separator comes first.
@@ -423,7 +466,11 @@ impl P {
                 }
                 Some(Tok::DSlash) => {
                     self.i += 1;
-                    steps.push(Step { axis: Axis::DescendantOrSelf, test: Test::Node, preds: vec![] });
+                    steps.push(Step {
+                        axis: Axis::DescendantOrSelf,
+                        test: Test::Node,
+                        preds: vec![],
+                    });
                     steps.push(self.step()?);
                 }
                 _ => return Ok(()),
@@ -433,10 +480,18 @@ impl P {
 
     fn step(&mut self) -> Result<Step, XPathError> {
         if self.eat(&Tok::Dot) {
-            return Ok(Step { axis: Axis::Self_, test: Test::Node, preds: vec![] });
+            return Ok(Step {
+                axis: Axis::Self_,
+                test: Test::Node,
+                preds: vec![],
+            });
         }
         if self.eat(&Tok::DDot) {
-            return Ok(Step { axis: Axis::Parent, test: Test::Node, preds: vec![] });
+            return Ok(Step {
+                axis: Axis::Parent,
+                test: Test::Node,
+                preds: vec![],
+            });
         }
         let mut axis = Axis::Child;
         if self.eat(&Tok::At) {
@@ -528,7 +583,11 @@ impl P {
 
 fn parse(src: &str) -> Result<Expr, XPathError> {
     let t = lex(src)?;
-    let mut p = P { t, i: 0, src: src.to_string() };
+    let mut p = P {
+        t,
+        i: 0,
+        src: src.to_string(),
+    };
     let e = p.binary(0)?;
     if p.i != p.t.len() {
         return p.err();
@@ -550,7 +609,11 @@ pub fn number_to_string(n: f64) -> String {
     if n.is_nan() {
         "NaN".into()
     } else if n.is_infinite() {
-        if n > 0.0 { "Infinity".into() } else { "-Infinity".into() }
+        if n > 0.0 {
+            "Infinity".into()
+        } else {
+            "-Infinity".into()
+        }
     } else if n == n.trunc() && n.abs() < 1e18 {
         format!("{}", n as i64)
     } else {
@@ -591,7 +654,10 @@ impl<'a> Ctx<'a> {
 
     fn to_str(&self, v: &Value) -> String {
         match v {
-            Value::Nodes(ns) => ns.first().map(|&n| self.string_value(n)).unwrap_or_default(),
+            Value::Nodes(ns) => ns
+                .first()
+                .map(|&n| self.string_value(n))
+                .unwrap_or_default(),
             Value::Str(s) => s.clone(),
             Value::Num(n) => number_to_string(*n),
             Value::Bool(b) => if *b { "true" } else { "false" }.into(),
@@ -638,10 +704,19 @@ impl<'a> Ctx<'a> {
             let node = &self.doc.nodes[cur.0];
             let Some(p) = node.parent else { break };
             if matches!(node.kind, Kind::Attribute { .. }) {
-                let i = self.doc.attributes(p).iter().position(|&a| a == cur).unwrap_or(0);
+                let i = self
+                    .doc
+                    .attributes(p)
+                    .iter()
+                    .position(|&a| a == cur)
+                    .unwrap_or(0);
                 key.push((0, i));
             } else {
-                let i = self.doc.nodes[p.0].children.iter().position(|&c| c == cur).unwrap_or(0);
+                let i = self.doc.nodes[p.0]
+                    .children
+                    .iter()
+                    .position(|&c| c == cur)
+                    .unwrap_or(0);
                 key.push((1, i));
             }
             cur = p;
@@ -655,7 +730,8 @@ impl<'a> Ctx<'a> {
         if nodes.len() < 2 {
             return;
         }
-        let mut keyed: Vec<(Vec<(u8, usize)>, NodeId)> = nodes.iter().map(|&n| (self.order_key(n), n)).collect();
+        let mut keyed: Vec<(Vec<(u8, usize)>, NodeId)> =
+            nodes.iter().map(|&n| (self.order_key(n), n)).collect();
         keyed.sort();
         keyed.dedup_by(|a, b| a.1 == b.1);
         *nodes = keyed.into_iter().map(|(_, n)| n).collect();
@@ -665,16 +741,31 @@ impl<'a> Ctx<'a> {
         let k = self.doc.kind(n);
         Ok(match test {
             Test::Node => true,
-            Test::Text => matches!(k, Kind::Text(_) | Kind::CData(_) | Kind::Whitespace(_) | Kind::SignificantWhitespace(_)),
+            Test::Text => matches!(
+                k,
+                Kind::Text(_)
+                    | Kind::CData(_)
+                    | Kind::Whitespace(_)
+                    | Kind::SignificantWhitespace(_)
+            ),
             Test::Comment => matches!(k, Kind::Comment(_)),
-            Test::Pi(t) => matches!(k, Kind::Pi { target, .. } if t.as_ref().is_none_or(|t| t == target)),
+            Test::Pi(t) => {
+                matches!(k, Kind::Pi { target, .. } if t.as_ref().is_none_or(|t| t == target))
+            }
             Test::Name(prefix, local) => {
-                let principal = if axis == Axis::Attribute { matches!(k, Kind::Attribute { .. }) } else { matches!(k, Kind::Element { .. }) };
+                let principal = if axis == Axis::Attribute {
+                    matches!(k, Kind::Attribute { .. })
+                } else {
+                    matches!(k, Kind::Element { .. })
+                };
                 if !principal {
                     return Ok(false);
                 }
                 let want_ns = match prefix {
-                    Some(p) => self.ns.get(p).ok_or_else(|| XPathError::UnknownPrefix(p.clone()))?,
+                    Some(p) => self
+                        .ns
+                        .get(p)
+                        .ok_or_else(|| XPathError::UnknownPrefix(p.clone()))?,
                     None => "",
                 };
                 if local == "*" {
@@ -692,7 +783,9 @@ impl<'a> Ctx<'a> {
         match axis {
             Axis::Child => {
                 if !is_attr {
-                    out.extend(d.children(n).iter().copied().filter(|&c| !matches!(d.kind(c), Kind::XmlDecl { .. } | Kind::DocType { .. })));
+                    out.extend(d.children(n).iter().copied().filter(|&c| {
+                        !matches!(d.kind(c), Kind::XmlDecl { .. } | Kind::DocType { .. })
+                    }));
                 }
             }
             Axis::Descendant | Axis::DescendantOrSelf => {
@@ -736,7 +829,11 @@ impl<'a> Ctx<'a> {
                 }
             }
             Axis::Following => {
-                let mut cur = if is_attr { d.nodes[n.0].parent } else { Some(n) };
+                let mut cur = if is_attr {
+                    d.nodes[n.0].parent
+                } else {
+                    Some(n)
+                };
                 let mut first = !is_attr;
                 if is_attr {
                     if let Some(o) = cur {
@@ -764,7 +861,11 @@ impl<'a> Ctx<'a> {
                 d.descendants(top, &mut |_, c| all.push(c));
                 let mut anc = Vec::new();
                 self.axis_nodes(Axis::Ancestor, n, &mut anc);
-                let start = if is_attr { d.nodes[n.0].parent.unwrap() } else { n };
+                let start = if is_attr {
+                    d.nodes[n.0].parent.unwrap()
+                } else {
+                    n
+                };
                 if let Some(idx) = all.iter().position(|&c| c == start) {
                     for &c in all[..idx].iter().rev() {
                         if !anc.contains(&c) {
@@ -774,14 +875,24 @@ impl<'a> Ctx<'a> {
                 }
             }
             Axis::Attribute => {
-                out.extend(d.attributes(n).iter().copied().filter(|&a| d.namespace_uri(a) != XMLNS_NS));
+                out.extend(
+                    d.attributes(n)
+                        .iter()
+                        .copied()
+                        .filter(|&a| d.namespace_uri(a) != XMLNS_NS),
+                );
             }
             Axis::Self_ => out.push(n),
             Axis::Namespace => {}
         }
     }
 
-    fn step(&self, input: &[NodeId], ordered_flat: bool, step: &Step) -> Result<(Vec<NodeId>, bool), XPathError> {
+    fn step(
+        &self,
+        input: &[NodeId],
+        ordered_flat: bool,
+        step: &Step,
+    ) -> Result<(Vec<NodeId>, bool), XPathError> {
         let mut result = Vec::new();
         for &n in input {
             let mut cand = Vec::new();
@@ -815,7 +926,11 @@ impl<'a> Ctx<'a> {
         let size = nodes.len();
         let mut out = Vec::new();
         for (i, n) in nodes.into_iter().enumerate() {
-            let f = Focus { node: n, pos: i + 1, size };
+            let f = Focus {
+                node: n,
+                pos: i + 1,
+                size,
+            };
             let v = self.eval(pred, f)?;
             let keep = match v {
                 Value::Num(x) => x == (i + 1) as f64,
@@ -828,15 +943,27 @@ impl<'a> Ctx<'a> {
         Ok(out)
     }
 
-    fn steps(&self, mut nodes: Vec<NodeId>, mut flat: bool, steps: &[Step]) -> Result<Vec<NodeId>, XPathError> {
+    fn steps(
+        &self,
+        mut nodes: Vec<NodeId>,
+        mut flat: bool,
+        steps: &[Step],
+    ) -> Result<Vec<NodeId>, XPathError> {
         let mut i = 0;
         while i < steps.len() {
             let s = &steps[i];
             // `//name[...]` → descendant::name[...] when predicates are positionless
-            if s.axis == Axis::DescendantOrSelf && matches!(s.test, Test::Node) && s.preds.is_empty() {
+            if s.axis == Axis::DescendantOrSelf
+                && matches!(s.test, Test::Node)
+                && s.preds.is_empty()
+            {
                 if let Some(next) = steps.get(i + 1) {
                     if next.axis == Axis::Child && next.preds.iter().all(positionless) {
-                        let merged = Step { axis: Axis::Descendant, test: next.test.clone(), preds: next.preds.clone() };
+                        let merged = Step {
+                            axis: Axis::Descendant,
+                            test: next.test.clone(),
+                            preds: next.preds.clone(),
+                        };
                         let (r, f) = self.step(&nodes, flat, &merged)?;
                         nodes = r;
                         flat = f && nodes.len() <= 1;
@@ -872,7 +999,8 @@ impl<'a> Ctx<'a> {
                 Value::Nodes(self.steps(ns, false, steps)?)
             }
             Expr::Union(a, b) => {
-                let (Value::Nodes(mut x), Value::Nodes(y)) = (self.eval(a, f)?, self.eval(b, f)?) else {
+                let (Value::Nodes(mut x), Value::Nodes(y)) = (self.eval(a, f)?, self.eval(b, f)?)
+                else {
                     return Err(XPathError::NotNodeSet);
                 };
                 x.extend(y);
@@ -880,8 +1008,12 @@ impl<'a> Ctx<'a> {
                 Value::Nodes(x)
             }
             Expr::Bin(op, a, b) => match *op {
-                "or" => Value::Bool(self.to_bool(&self.eval(a, f)?) || self.to_bool(&self.eval(b, f)?)),
-                "and" => Value::Bool(self.to_bool(&self.eval(a, f)?) && self.to_bool(&self.eval(b, f)?)),
+                "or" => {
+                    Value::Bool(self.to_bool(&self.eval(a, f)?) || self.to_bool(&self.eval(b, f)?))
+                }
+                "and" => {
+                    Value::Bool(self.to_bool(&self.eval(a, f)?) && self.to_bool(&self.eval(b, f)?))
+                }
                 "=" | "!=" | "<" | ">" | "<=" | ">=" => {
                     let (x, y) = (self.eval(a, f)?, self.eval(b, f)?);
                     Value::Bool(self.compare(op, &x, &y))
@@ -925,7 +1057,10 @@ impl<'a> Ctx<'a> {
     fn compare(&self, op: &str, x: &Value, y: &Value) -> bool {
         match (x, y) {
             (Value::Nodes(xs), Value::Nodes(ys)) => {
-                let ysv: Vec<Value> = ys.iter().map(|&n| Value::Str(self.string_value(n))).collect();
+                let ysv: Vec<Value> = ys
+                    .iter()
+                    .map(|&n| Value::Str(self.string_value(n)))
+                    .collect();
                 xs.iter().any(|&a| {
                     let av = Value::Str(self.string_value(a));
                     ysv.iter().any(|bv| self.cmp_atoms(op, &av, bv))
@@ -933,11 +1068,15 @@ impl<'a> Ctx<'a> {
             }
             (Value::Nodes(xs), other) => match other {
                 Value::Bool(_) => self.cmp_atoms(op, &Value::Bool(!xs.is_empty()), other),
-                _ => xs.iter().any(|&a| self.cmp_atoms(op, &Value::Str(self.string_value(a)), other)),
+                _ => xs
+                    .iter()
+                    .any(|&a| self.cmp_atoms(op, &Value::Str(self.string_value(a)), other)),
             },
             (other, Value::Nodes(ys)) => match other {
                 Value::Bool(_) => self.cmp_atoms(op, other, &Value::Bool(!ys.is_empty())),
-                _ => ys.iter().any(|&b| self.cmp_atoms(op, other, &Value::Str(self.string_value(b)))),
+                _ => ys
+                    .iter()
+                    .any(|&b| self.cmp_atoms(op, other, &Value::Str(self.string_value(b)))),
             },
             _ => self.cmp_atoms(op, x, y),
         }
@@ -969,9 +1108,21 @@ impl<'a> Ctx<'a> {
                 Value::Nodes(n) => Value::Num(n.len() as f64),
                 _ => return Err(XPathError::NotNodeSet),
             },
-            "local-name" => Value::Str(node_arg(0)?.map(|n| self.local_or_empty(n)).unwrap_or_default()),
-            "name" => Value::Str(node_arg(0)?.map(|n| self.name_or_empty(n)).unwrap_or_default()),
-            "namespace-uri" => Value::Str(node_arg(0)?.map(|n| self.doc.namespace_uri(n).to_string()).unwrap_or_default()),
+            "local-name" => Value::Str(
+                node_arg(0)?
+                    .map(|n| self.local_or_empty(n))
+                    .unwrap_or_default(),
+            ),
+            "name" => Value::Str(
+                node_arg(0)?
+                    .map(|n| self.name_or_empty(n))
+                    .unwrap_or_default(),
+            ),
+            "namespace-uri" => Value::Str(
+                node_arg(0)?
+                    .map(|n| self.doc.namespace_uri(n).to_string())
+                    .unwrap_or_default(),
+            ),
             "string" => Value::Str(s_arg(0)?),
             "concat" => {
                 let mut s = String::new();
@@ -988,36 +1139,67 @@ impl<'a> Ctx<'a> {
             }
             "substring-after" => {
                 let (a, b) = (s_arg(0)?, s_arg(1)?);
-                Value::Str(a.find(&b).map(|i| a[i + b.len()..].to_string()).unwrap_or_default())
+                Value::Str(
+                    a.find(&b)
+                        .map(|i| a[i + b.len()..].to_string())
+                        .unwrap_or_default(),
+                )
             }
             "substring" => {
                 let s: Vec<char> = s_arg(0)?.chars().collect();
                 let start = xp_round(self.to_num(&arg(1)?));
-                let end = if args.len() > 2 { start + xp_round(self.to_num(&arg(2)?)) } else { f64::INFINITY };
-                let r: String = s.iter().enumerate().filter(|(i, _)| {
-                    let p = (*i + 1) as f64;
-                    p >= start && p < end
-                }).map(|(_, c)| *c).collect();
+                let end = if args.len() > 2 {
+                    start + xp_round(self.to_num(&arg(2)?))
+                } else {
+                    f64::INFINITY
+                };
+                let r: String = s
+                    .iter()
+                    .enumerate()
+                    .filter(|(i, _)| {
+                        let p = (*i + 1) as f64;
+                        p >= start && p < end
+                    })
+                    .map(|(_, c)| *c)
+                    .collect();
                 Value::Str(r)
             }
             "string-length" => Value::Num(s_arg(0)?.encode_utf16().count() as f64),
-            "normalize-space" => Value::Str(s_arg(0)?.split([' ', '\t', '\n', '\r']).filter(|w| !w.is_empty()).collect::<Vec<_>>().join(" ")),
+            "normalize-space" => Value::Str(
+                s_arg(0)?
+                    .split([' ', '\t', '\n', '\r'])
+                    .filter(|w| !w.is_empty())
+                    .collect::<Vec<_>>()
+                    .join(" "),
+            ),
             "translate" => {
                 let (s, from, to) = (s_arg(0)?, s_arg(1)?, s_arg(2)?);
                 let from: Vec<char> = from.chars().collect();
                 let to: Vec<char> = to.chars().collect();
-                Value::Str(s.chars().filter_map(|c| match from.iter().position(|&x| x == c) {
-                    Some(i) => to.get(i).copied(),
-                    None => Some(c),
-                }).collect())
+                Value::Str(
+                    s.chars()
+                        .filter_map(|c| match from.iter().position(|&x| x == c) {
+                            Some(i) => to.get(i).copied(),
+                            None => Some(c),
+                        })
+                        .collect(),
+                )
             }
             "boolean" => Value::Bool(self.to_bool(&arg(0)?)),
             "not" => Value::Bool(!self.to_bool(&arg(0)?)),
             "true" => Value::Bool(true),
             "false" => Value::Bool(false),
-            "number" => Value::Num(if args.is_empty() { string_to_number(&self.string_value(f.node)) } else { self.to_num(&arg(0)?) }),
+            "number" => Value::Num(if args.is_empty() {
+                string_to_number(&self.string_value(f.node))
+            } else {
+                self.to_num(&arg(0)?)
+            }),
             "sum" => match arg(0)? {
-                Value::Nodes(n) => Value::Num(n.iter().map(|&x| string_to_number(&self.string_value(x))).sum()),
+                Value::Nodes(n) => Value::Num(
+                    n.iter()
+                        .map(|&x| string_to_number(&self.string_value(x)))
+                        .sum(),
+                ),
                 _ => return Err(XPathError::NotNodeSet),
             },
             "floor" => Value::Num(self.to_num(&arg(0)?).floor()),
@@ -1042,14 +1224,18 @@ impl<'a> Ctx<'a> {
 
     fn local_or_empty(&self, n: NodeId) -> String {
         match self.doc.kind(n) {
-            Kind::Element { .. } | Kind::Attribute { .. } | Kind::Pi { .. } => self.doc.local_name(n).to_string(),
+            Kind::Element { .. } | Kind::Attribute { .. } | Kind::Pi { .. } => {
+                self.doc.local_name(n).to_string()
+            }
             _ => String::new(),
         }
     }
 
     fn name_or_empty(&self, n: NodeId) -> String {
         match self.doc.kind(n) {
-            Kind::Element { .. } | Kind::Attribute { .. } | Kind::Pi { .. } => self.doc.name(n).to_string(),
+            Kind::Element { .. } | Kind::Attribute { .. } | Kind::Pi { .. } => {
+                self.doc.name(n).to_string()
+            }
             _ => String::new(),
         }
     }
@@ -1076,14 +1262,22 @@ fn positionless(e: &Expr) -> bool {
     let boolish = match e {
         Expr::Bin(op, ..) => matches!(*op, "or" | "and" | "=" | "!=" | "<" | ">" | "<=" | ">="),
         Expr::Path(..) | Expr::Union(..) | Expr::Lit(_) => true,
-        Expr::Func(n, _) => matches!(n.as_str(), "not" | "boolean" | "contains" | "starts-with" | "true" | "false" | "lang"),
+        Expr::Func(n, _) => matches!(
+            n.as_str(),
+            "not" | "boolean" | "contains" | "starts-with" | "true" | "false" | "lang"
+        ),
         _ => false,
     };
     boolish && walk(e)
 }
 
 /// Evaluates `expr` with `ctx` as context node; it must yield a node-set.
-pub fn select(doc: &Document, ctx: NodeId, expr: &str, ns: &Namespaces) -> Result<Vec<NodeId>, XPathError> {
+pub fn select(
+    doc: &Document,
+    ctx: NodeId,
+    expr: &str,
+    ns: &Namespaces,
+) -> Result<Vec<NodeId>, XPathError> {
     match evaluate(doc, ctx, expr, ns)? {
         Value::Nodes(n) => Ok(n),
         _ => Err(XPathError::NotNodeSet),
@@ -1091,8 +1285,20 @@ pub fn select(doc: &Document, ctx: NodeId, expr: &str, ns: &Namespaces) -> Resul
 }
 
 /// `XPathNavigator.Evaluate`.
-pub fn evaluate(doc: &Document, ctx: NodeId, expr: &str, ns: &Namespaces) -> Result<Value, XPathError> {
+pub fn evaluate(
+    doc: &Document,
+    ctx: NodeId,
+    expr: &str,
+    ns: &Namespaces,
+) -> Result<Value, XPathError> {
     let e = parse(expr)?;
     let c = Ctx { doc, ns };
-    c.eval(&e, Focus { node: ctx, pos: 1, size: 1 })
+    c.eval(
+        &e,
+        Focus {
+            node: ctx,
+            pos: 1,
+            size: 1,
+        },
+    )
 }

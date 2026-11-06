@@ -35,7 +35,14 @@ pub(crate) fn escape_attr_into(s: &str, out: &mut String) {
 }
 
 pub(crate) fn decl_value(k: &Kind) -> String {
-    let Kind::XmlDecl { version, encoding, standalone } = k else { return String::new() };
+    let Kind::XmlDecl {
+        version,
+        encoding,
+        standalone,
+    } = k
+    else {
+        return String::new();
+    };
     let mut s = format!("version=\"{version}\"");
     if !encoding.is_empty() {
         s.push_str(&format!(" encoding=\"{encoding}\""));
@@ -50,17 +57,28 @@ pub(crate) fn decl_value(k: &Kind) -> String {
 type Scope = Vec<(String, String)>;
 
 fn in_scope<'s>(scope: &'s Scope, prefix: &str) -> Option<&'s str> {
-    scope.iter().rev().find(|(p, _)| p == prefix).map(|(_, u)| u.as_str())
+    scope
+        .iter()
+        .rev()
+        .find(|(p, _)| p == prefix)
+        .map(|(_, u)| u.as_str())
 }
 
 /// Writes the start tag; returns the number of bindings pushed on `scope`.
 fn start_tag(doc: &Document, n: NodeId, scope: &mut Scope, out: &mut String) -> usize {
-    let Kind::Element { name, ns, attrs, .. } = doc.kind(n) else { unreachable!() };
+    let Kind::Element {
+        name, ns, attrs, ..
+    } = doc.kind(n)
+    else {
+        unreachable!()
+    };
     let before = scope.len();
     out.push('<');
     out.push_str(name);
     for &a in attrs {
-        let Kind::Attribute { name: an, .. } = doc.kind(a) else { continue };
+        let Kind::Attribute { name: an, .. } = doc.kind(a) else {
+            continue;
+        };
         if an == "xmlns" {
             scope.push((String::new(), doc.value(a).unwrap_or_default()));
         } else if let Some(p) = an.strip_prefix("xmlns:") {
@@ -68,7 +86,12 @@ fn start_tag(doc: &Document, n: NodeId, scope: &mut Scope, out: &mut String) -> 
         }
     }
     for &a in attrs {
-        let Kind::Attribute { name: an, value, .. } = doc.kind(a) else { continue };
+        let Kind::Attribute {
+            name: an, value, ..
+        } = doc.kind(a)
+        else {
+            continue;
+        };
         out.push(' ');
         out.push_str(an);
         out.push_str("=\"");
@@ -133,11 +156,19 @@ fn leaf(doc: &Document, n: NodeId, out: &mut String) {
             out.push_str(&decl_value(k));
             out.push_str("?>");
         }
-        Kind::DocType { name, public_id, system_id, subset } => {
+        Kind::DocType {
+            name,
+            public_id,
+            system_id,
+            subset,
+        } => {
             out.push_str("<!DOCTYPE ");
             out.push_str(name);
             if let Some(p) = public_id {
-                out.push_str(&format!(" PUBLIC \"{p}\" \"{}\"", system_id.as_deref().unwrap_or("")));
+                out.push_str(&format!(
+                    " PUBLIC \"{p}\" \"{}\"",
+                    system_id.as_deref().unwrap_or("")
+                ));
             } else if let Some(s) = system_id {
                 out.push_str(&format!(" SYSTEM \"{s}\""));
             }
@@ -251,7 +282,10 @@ impl Indenter<'_> {
                 }
                 self.scope.truncate(self.scope.len() - pushed);
             }
-            Kind::Text(_) | Kind::CData(_) | Kind::Whitespace(_) | Kind::SignificantWhitespace(_) => {
+            Kind::Text(_)
+            | Kind::CData(_)
+            | Kind::Whitespace(_)
+            | Kind::SignificantWhitespace(_) => {
                 if self.mixed.len() > 1 {
                     *self.mixed.last_mut().unwrap() = true;
                 }
@@ -268,7 +302,15 @@ impl Indenter<'_> {
 }
 
 pub(crate) fn indented(doc: &Document, n: NodeId, indent: &str, newline: &str) -> String {
-    let mut w = Indenter { doc, indent, newline, out: String::new(), scope: Scope::new(), mixed: vec![false], wrote_any: false };
+    let mut w = Indenter {
+        doc,
+        indent,
+        newline,
+        out: String::new(),
+        scope: Scope::new(),
+        mixed: vec![false],
+        wrote_any: false,
+    };
     w.node(n);
     w.out
 }

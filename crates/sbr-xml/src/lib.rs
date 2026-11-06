@@ -99,7 +99,11 @@ impl Default for Document {
 impl Document {
     pub fn new() -> Self {
         Document {
-            nodes: vec![Node { kind: Kind::Document, parent: None, children: Vec::new() }],
+            nodes: vec![Node {
+                kind: Kind::Document,
+                parent: None,
+                children: Vec::new(),
+            }],
             preserve_whitespace: false,
             entities: HashMap::new(),
         }
@@ -111,7 +115,11 @@ impl Document {
     }
 
     pub(crate) fn alloc(&mut self, kind: Kind) -> NodeId {
-        self.nodes.push(Node { kind, parent: None, children: Vec::new() });
+        self.nodes.push(Node {
+            kind,
+            parent: None,
+            children: Vec::new(),
+        });
         NodeId(self.nodes.len() - 1)
     }
 
@@ -154,7 +162,12 @@ impl Document {
     }
 
     pub fn create_element_ns(&mut self, qname: &str, ns: &str) -> NodeId {
-        self.alloc(Kind::Element { name: qname.to_string(), ns: ns.to_string(), attrs: Vec::new(), full_end: false })
+        self.alloc(Kind::Element {
+            name: qname.to_string(),
+            ns: ns.to_string(),
+            attrs: Vec::new(),
+            full_end: false,
+        })
     }
 
     pub fn create_text_node(&mut self, text: &str) -> NodeId {
@@ -174,12 +187,20 @@ impl Document {
     }
 
     pub fn create_processing_instruction(&mut self, target: &str, data: &str) -> NodeId {
-        self.alloc(Kind::Pi { target: target.to_string(), data: data.to_string() })
+        self.alloc(Kind::Pi {
+            target: target.to_string(),
+            data: data.to_string(),
+        })
     }
 
     /// `XmlDocument.CreateXmlDeclaration(version, encoding, standalone)`;
     /// `None` and `""` are equivalent, as in .NET.
-    pub fn create_xml_declaration(&mut self, version: &str, encoding: Option<&str>, standalone: Option<&str>) -> NodeId {
+    pub fn create_xml_declaration(
+        &mut self,
+        version: &str,
+        encoding: Option<&str>,
+        standalone: Option<&str>,
+    ) -> NodeId {
         self.alloc(Kind::XmlDecl {
             version: version.to_string(),
             encoding: encoding.unwrap_or("").to_string(),
@@ -189,7 +210,11 @@ impl Document {
 
     pub fn create_attribute(&mut self, name: &str, value: &str) -> NodeId {
         let ns = attr_ns_for(name);
-        self.alloc(Kind::Attribute { name: name.to_string(), ns, value: value.to_string() })
+        self.alloc(Kind::Attribute {
+            name: name.to_string(),
+            ns,
+            value: value.to_string(),
+        })
     }
 
     // ----- tree navigation ----------------------------------------------
@@ -215,7 +240,11 @@ impl Document {
     }
 
     pub fn document_element(&self) -> Option<NodeId> {
-        self.nodes[0].children.iter().copied().find(|&c| self.is_element(c))
+        self.nodes[0]
+            .children
+            .iter()
+            .copied()
+            .find(|&c| self.is_element(c))
     }
 
     pub fn parent(&self, n: NodeId) -> Option<NodeId> {
@@ -238,7 +267,10 @@ impl Document {
     }
 
     pub fn child_elements(&self, n: NodeId) -> impl Iterator<Item = NodeId> + '_ {
-        self.children(n).iter().copied().filter(move |&c| self.is_element(c))
+        self.children(n)
+            .iter()
+            .copied()
+            .filter(move |&c| self.is_element(c))
     }
 
     pub fn has_child_nodes(&self, n: NodeId) -> bool {
@@ -292,14 +324,18 @@ impl Document {
     pub fn local_name(&self, n: NodeId) -> &str {
         let name = self.name(n);
         match self.kind(n) {
-            Kind::Element { .. } | Kind::Attribute { .. } => name.rsplit_once(':').map(|(_, l)| l).unwrap_or(name),
+            Kind::Element { .. } | Kind::Attribute { .. } => {
+                name.rsplit_once(':').map(|(_, l)| l).unwrap_or(name)
+            }
             _ => name,
         }
     }
 
     pub fn prefix(&self, n: NodeId) -> &str {
         match self.kind(n) {
-            Kind::Element { name, .. } | Kind::Attribute { name, .. } => name.split_once(':').map(|(p, _)| p).unwrap_or(""),
+            Kind::Element { name, .. } | Kind::Attribute { name, .. } => {
+                name.split_once(':').map(|(p, _)| p).unwrap_or("")
+            }
             _ => "",
         }
     }
@@ -315,7 +351,11 @@ impl Document {
     pub fn value(&self, n: NodeId) -> Option<String> {
         match self.kind(n) {
             Kind::Attribute { value, .. } => Some(value.clone()),
-            Kind::Text(s) | Kind::CData(s) | Kind::Comment(s) | Kind::Whitespace(s) | Kind::SignificantWhitespace(s) => Some(s.clone()),
+            Kind::Text(s)
+            | Kind::CData(s)
+            | Kind::Comment(s)
+            | Kind::Whitespace(s)
+            | Kind::SignificantWhitespace(s) => Some(s.clone()),
             Kind::Pi { data, .. } => Some(data.clone()),
             Kind::XmlDecl { .. } => Some(write::decl_value(self.kind(n))),
             _ => None,
@@ -325,7 +365,11 @@ impl Document {
     pub fn set_value(&mut self, n: NodeId, v: &str) {
         match &mut self.nodes[n.0].kind {
             Kind::Attribute { value, .. } => *value = v.to_string(),
-            Kind::Text(s) | Kind::CData(s) | Kind::Comment(s) | Kind::Whitespace(s) | Kind::SignificantWhitespace(s) => *s = v.to_string(),
+            Kind::Text(s)
+            | Kind::CData(s)
+            | Kind::Comment(s)
+            | Kind::Whitespace(s)
+            | Kind::SignificantWhitespace(s) => *s = v.to_string(),
             Kind::Pi { data, .. } => *data = v.to_string(),
             _ => {}
         }
@@ -341,7 +385,10 @@ impl Document {
     }
 
     pub fn attribute_node(&self, el: NodeId, name: &str) -> Option<NodeId> {
-        self.attributes(el).iter().copied().find(|&a| self.name(a) == name)
+        self.attributes(el)
+            .iter()
+            .copied()
+            .find(|&a| self.name(a) == name)
     }
 
     pub fn has_attribute(&self, el: NodeId, name: &str) -> bool {
@@ -445,19 +492,42 @@ impl Document {
         child
     }
 
-    pub fn insert_before(&mut self, parent: NodeId, child: NodeId, reference: Option<NodeId>) -> NodeId {
-        let Some(r) = reference else { return self.append_child(parent, child) };
+    pub fn insert_before(
+        &mut self,
+        parent: NodeId,
+        child: NodeId,
+        reference: Option<NodeId>,
+    ) -> NodeId {
+        let Some(r) = reference else {
+            return self.append_child(parent, child);
+        };
         self.detach(child);
-        let i = self.nodes[parent.0].children.iter().position(|&c| c == r).unwrap_or(self.nodes[parent.0].children.len());
+        let i = self.nodes[parent.0]
+            .children
+            .iter()
+            .position(|&c| c == r)
+            .unwrap_or(self.nodes[parent.0].children.len());
         self.nodes[child.0].parent = Some(parent);
         self.nodes[parent.0].children.insert(i, child);
         child
     }
 
-    pub fn insert_after(&mut self, parent: NodeId, child: NodeId, reference: Option<NodeId>) -> NodeId {
-        let Some(r) = reference else { return self.prepend_child(parent, child) };
+    pub fn insert_after(
+        &mut self,
+        parent: NodeId,
+        child: NodeId,
+        reference: Option<NodeId>,
+    ) -> NodeId {
+        let Some(r) = reference else {
+            return self.prepend_child(parent, child);
+        };
         self.detach(child);
-        let i = self.nodes[parent.0].children.iter().position(|&c| c == r).map(|i| i + 1).unwrap_or(self.nodes[parent.0].children.len());
+        let i = self.nodes[parent.0]
+            .children
+            .iter()
+            .position(|&c| c == r)
+            .map(|i| i + 1)
+            .unwrap_or(self.nodes[parent.0].children.len());
         self.nodes[child.0].parent = Some(parent);
         self.nodes[parent.0].children.insert(i, child);
         child
@@ -470,7 +540,12 @@ impl Document {
         child
     }
 
-    pub fn replace_child(&mut self, parent: NodeId, new_child: NodeId, old_child: NodeId) -> NodeId {
+    pub fn replace_child(
+        &mut self,
+        parent: NodeId,
+        new_child: NodeId,
+        old_child: NodeId,
+    ) -> NodeId {
         self.insert_before(parent, new_child, Some(old_child));
         self.remove_child(parent, old_child)
     }
@@ -498,7 +573,10 @@ impl Document {
     pub fn clone_node(&mut self, n: NodeId, deep: bool) -> NodeId {
         let mut kind = self.kind(n).clone();
         let attrs: Vec<NodeId> = self.attributes(n).to_vec();
-        if let Kind::Element { attrs: a, full_end, .. } = &mut kind {
+        if let Kind::Element {
+            attrs: a, full_end, ..
+        } = &mut kind
+        {
             a.clear();
             if !deep {
                 *full_end = false;
@@ -523,7 +601,10 @@ impl Document {
     /// Copies a node (deeply) from another document: `XmlDocument.ImportNode`.
     pub fn import_node(&mut self, other: &Document, n: NodeId, deep: bool) -> NodeId {
         let mut kind = other.kind(n).clone();
-        if let Kind::Element { attrs, full_end, .. } = &mut kind {
+        if let Kind::Element {
+            attrs, full_end, ..
+        } = &mut kind
+        {
             attrs.clear();
             if !deep {
                 *full_end = false;
@@ -561,7 +642,10 @@ impl Document {
     fn collect_text(&self, n: NodeId, out: &mut String) {
         for &c in self.children(n) {
             match self.kind(c) {
-                Kind::Text(s) | Kind::CData(s) | Kind::Whitespace(s) | Kind::SignificantWhitespace(s) => out.push_str(s),
+                Kind::Text(s)
+                | Kind::CData(s)
+                | Kind::Whitespace(s)
+                | Kind::SignificantWhitespace(s) => out.push_str(s),
                 Kind::Element { .. } => self.collect_text(c, out),
                 _ => {}
             }
@@ -590,7 +674,9 @@ impl Document {
     pub fn inner_xml(&self, n: NodeId) -> String {
         let mut s = String::new();
         match self.kind(n) {
-            Kind::Attribute { .. } => write::escape_attr_into(&self.value(n).unwrap_or_default(), &mut s),
+            Kind::Attribute { .. } => {
+                write::escape_attr_into(&self.value(n).unwrap_or_default(), &mut s)
+            }
             _ => {
                 for &c in self.children(n) {
                     write::write_node(self, c, &mut s);
@@ -661,7 +747,11 @@ impl Document {
         if let Kind::Attribute { .. } = self.kind(n) {
             n = self.nodes[n.0].parent?;
         }
-        let want = if prefix.is_empty() { "xmlns".to_string() } else { format!("xmlns:{prefix}") };
+        let want = if prefix.is_empty() {
+            "xmlns".to_string()
+        } else {
+            format!("xmlns:{prefix}")
+        };
         let mut cur = Some(n);
         while let Some(c) = cur {
             if let Some(v) = self.attr(c, &want) {
@@ -682,15 +772,29 @@ impl Document {
         xpath::select(self, ctx, expr, &xpath::Namespaces::new())
     }
 
-    pub fn select_single_node(&self, ctx: NodeId, expr: &str) -> Result<Option<NodeId>, XPathError> {
+    pub fn select_single_node(
+        &self,
+        ctx: NodeId,
+        expr: &str,
+    ) -> Result<Option<NodeId>, XPathError> {
         Ok(self.select_nodes(ctx, expr)?.into_iter().next())
     }
 
-    pub fn select_nodes_ns(&self, ctx: NodeId, expr: &str, ns: &xpath::Namespaces) -> Result<Vec<NodeId>, XPathError> {
+    pub fn select_nodes_ns(
+        &self,
+        ctx: NodeId,
+        expr: &str,
+        ns: &xpath::Namespaces,
+    ) -> Result<Vec<NodeId>, XPathError> {
         xpath::select(self, ctx, expr, ns)
     }
 
-    pub fn select_single_node_ns(&self, ctx: NodeId, expr: &str, ns: &xpath::Namespaces) -> Result<Option<NodeId>, XPathError> {
+    pub fn select_single_node_ns(
+        &self,
+        ctx: NodeId,
+        expr: &str,
+        ns: &xpath::Namespaces,
+    ) -> Result<Option<NodeId>, XPathError> {
         Ok(self.select_nodes_ns(ctx, expr, ns)?.into_iter().next())
     }
 

@@ -5,13 +5,59 @@ use sbr_xml::Document;
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-pub const LOGOS_BOOK_NAMES: [&str; 66] = ["Gen", "Exod", "Lev", "Num", "Deut", "Josh", "Judg", "Rth", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Esth", "Jb", "Psa", "Prov", "Ecc", "Song", "Isa", "Jer", "Lam", "Ezek", "Dan", "Hos", "Joe", "Am", "Obad", "Jon", "Mic", "Nah", "Hab", "Zeph", "Hag", "Zec", "Mal", "Matt", "Mrk", "Luk", "Joh", "Act", "Rom", "1Co", "2Co", "Gal", "Eph", "Phil", "Col", "1Th", "2Th", "1Ti", "2Ti", "Tit", "Phm", "Heb", "Jas", "1Pe", "2Pe", "1Jo", "2Jo", "3Jo", "Jud", "Rev"];
-pub const OLB_BOOK_NAMES: [&str; 66] = ["Ge", "Ex", "Le", "Nu", "De", "Jos", "Jud", "Ru", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Ne", "Es", "Job", "Ps", "Pr", "Ec", "So", "Isa", "Jer", "La", "Eze", "Da", "Ho", "Joe", "Am", "Ob", "Jon", "Mic", "Na", "Hab", "Zep", "Hag", "Zec", "Mal", "Mt", "Mr", "Lu", "Joh", "Ac", "Ro", "1Co", "2Co", "Ga", "Eph", "Php", "Col", "1Th", "2Th", "1Ti", "2Ti", "Tit", "Phm", "Heb", "Jas", "1Pe", "2Pe", "1Jo", "2Jo", "3Jo", "Jude", "Re"];
+pub const LOGOS_BOOK_NAMES: [&str; 66] = [
+    "Gen", "Exod", "Lev", "Num", "Deut", "Josh", "Judg", "Rth", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch",
+    "2Ch", "Ezr", "Neh", "Esth", "Jb", "Psa", "Prov", "Ecc", "Song", "Isa", "Jer", "Lam", "Ezek",
+    "Dan", "Hos", "Joe", "Am", "Obad", "Jon", "Mic", "Nah", "Hab", "Zeph", "Hag", "Zec", "Mal",
+    "Matt", "Mrk", "Luk", "Joh", "Act", "Rom", "1Co", "2Co", "Gal", "Eph", "Phil", "Col", "1Th",
+    "2Th", "1Ti", "2Ti", "Tit", "Phm", "Heb", "Jas", "1Pe", "2Pe", "1Jo", "2Jo", "3Jo", "Jud",
+    "Rev",
+];
+pub const OLB_BOOK_NAMES: [&str; 66] = [
+    "Ge", "Ex", "Le", "Nu", "De", "Jos", "Jud", "Ru", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch",
+    "Ezr", "Ne", "Es", "Job", "Ps", "Pr", "Ec", "So", "Isa", "Jer", "La", "Eze", "Da", "Ho", "Joe",
+    "Am", "Ob", "Jon", "Mic", "Na", "Hab", "Zep", "Hag", "Zec", "Mal", "Mt", "Mr", "Lu", "Joh",
+    "Ac", "Ro", "1Co", "2Co", "Ga", "Eph", "Php", "Col", "1Th", "2Th", "1Ti", "2Ti", "Tit", "Phm",
+    "Heb", "Jas", "1Pe", "2Pe", "1Jo", "2Jo", "3Jo", "Jude", "Re",
+];
 /// Index matches Zefania book numbers (book 90+ are Zefania 901+).
-pub const SWORD_BOOK_ABBR_IN_ZEFANIA_INDEX: [&str; 93] = ["Gen", "Exod", "Lev", "Num", "Deut", "Josh", "Judg", "Ruth", "1Sam", "2Sam", "1Kgs", "2Kgs", "1Chr", "2Chr", "Ezra", "Neh", "Esth", "Job", "Ps", "Prov", "Eccl", "Song", "Isa", "Jer", "Lam", "Ezek", "Dan", "Hos", "Joel", "Amos", "Obad", "Jonah", "Mic", "Nah", "Hab", "Zeph", "Hag", "Zech", "Mal", "Matt", "Mark", "Luke", "John", "Acts", "Rom", "1Cor", "2Cor", "Gal", "Eph", "Phil", "Col", "1Thess", "2Thess", "1Tim", "2Tim", "Titus", "Phlm", "Heb", "Jas", "1Pet", "2Pet", "1John", "2John", "3John", "Jude", "Rev", "Jdt", "Wis", "Tob", "Sir", "Bar", "1Macc", "2Macc", "AddDan", "AddEsth", "PrMan", "3Macc", "4Macc", "EpJer", "1Esd", "2Esd", "", "", "EpLao", "1En", "kGen", "Sus", "Bel", "AddPs", "PrAzar", "EsthGr", "DanGr", "Jub"];
-pub const PDB_BOOK_NUMBERS: [i32; 84] = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 190, 220, 230, 240, 250, 260, 290, 300, 310, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 145, 146, 170, 180, 200, 210, 215, 216, 231, 235, 270, 280, 285, 315, 320, 335, 345, 346];
-pub const ESWORD_TO_ZEFANIA_APOCRYPHA: [(i32, i32); 8] = [(67, 69), (68, 67), (69, 68), (74, 80), (75, 81), (78, 76), (76, 77), (77, 78)];
-pub const ZEFANIA_TO_ESWORD_APOCRYPHA: [(i32, i32); 8] = [(69, 67), (67, 68), (68, 69), (80, 74), (81, 75), (76, 78), (77, 76), (78, 77)];
+pub const SWORD_BOOK_ABBR_IN_ZEFANIA_INDEX: [&str; 93] = [
+    "Gen", "Exod", "Lev", "Num", "Deut", "Josh", "Judg", "Ruth", "1Sam", "2Sam", "1Kgs", "2Kgs",
+    "1Chr", "2Chr", "Ezra", "Neh", "Esth", "Job", "Ps", "Prov", "Eccl", "Song", "Isa", "Jer",
+    "Lam", "Ezek", "Dan", "Hos", "Joel", "Amos", "Obad", "Jonah", "Mic", "Nah", "Hab", "Zeph",
+    "Hag", "Zech", "Mal", "Matt", "Mark", "Luke", "John", "Acts", "Rom", "1Cor", "2Cor", "Gal",
+    "Eph", "Phil", "Col", "1Thess", "2Thess", "1Tim", "2Tim", "Titus", "Phlm", "Heb", "Jas",
+    "1Pet", "2Pet", "1John", "2John", "3John", "Jude", "Rev", "Jdt", "Wis", "Tob", "Sir", "Bar",
+    "1Macc", "2Macc", "AddDan", "AddEsth", "PrMan", "3Macc", "4Macc", "EpJer", "1Esd", "2Esd", "",
+    "", "EpLao", "1En", "kGen", "Sus", "Bel", "AddPs", "PrAzar", "EsthGr", "DanGr", "Jub",
+];
+pub const PDB_BOOK_NUMBERS: [i32; 84] = [
+    10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 190, 220, 230, 240, 250,
+    260, 290, 300, 310, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470,
+    480, 490, 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660,
+    670, 680, 690, 700, 710, 720, 730, 145, 146, 170, 180, 200, 210, 215, 216, 231, 235, 270, 280,
+    285, 315, 320, 335, 345, 346,
+];
+pub const ESWORD_TO_ZEFANIA_APOCRYPHA: [(i32, i32); 8] = [
+    (67, 69),
+    (68, 67),
+    (69, 68),
+    (74, 80),
+    (75, 81),
+    (78, 76),
+    (76, 77),
+    (77, 78),
+];
+pub const ZEFANIA_TO_ESWORD_APOCRYPHA: [(i32, i32); 8] = [
+    (69, 67),
+    (67, 68),
+    (68, 69),
+    (80, 74),
+    (81, 75),
+    (76, 78),
+    (77, 76),
+    (78, 77),
+];
 
 /// Data built by `FormatUtil.Init()` from `bookid.xml`.
 pub struct BookTables {
@@ -26,22 +72,41 @@ pub fn tables() -> &'static BookTables {
     T.get_or_init(|| {
         let doc = Document::parse(include_str!("../resources/bookid.xml")).expect("bookid.xml");
         let r = doc.root();
-        let one = |x: String| doc.select_single_node(r, &x).unwrap().map(|n| doc.inner_text(n)).unwrap_or_default();
+        let one = |x: String| {
+            doc.select_single_node(r, &x)
+                .unwrap()
+                .map(|n| doc.inner_text(n))
+                .unwrap_or_default()
+        };
         let mut chapter_count = Vec::new();
         let mut verse_count = Vec::new();
         let mut possible_abbr = Vec::new();
         for i in 1..=66 {
-            let cc: i32 = one(format!("/books/book[position()={i}]/chapters")).trim().parse().unwrap_or(0);
+            let cc: i32 = one(format!("/books/book[position()={i}]/chapters"))
+                .trim()
+                .parse()
+                .unwrap_or(0);
             chapter_count.push(cc);
             let mut vc = HashMap::new();
             for j in 1..=cc {
-                if let Ok(v) = one(format!("/books/book[position()={i}]/chapter[@n='{j}']/@verses")).trim().parse() {
+                if let Ok(v) = one(format!(
+                    "/books/book[position()={i}]/chapter[@n='{j}']/@verses"
+                ))
+                .trim()
+                .parse()
+                {
                     vc.insert(j, v);
                 }
             }
             verse_count.push(vc);
-            let mut abbr = vec![i.to_string(), one(format!("/books/book[position()={i}]/@name"))];
-            for n in doc.select_nodes(r, &format!("/books/book[position()={i}]/abbrev")).unwrap() {
+            let mut abbr = vec![
+                i.to_string(),
+                one(format!("/books/book[position()={i}]/@name")),
+            ];
+            for n in doc
+                .select_nodes(r, &format!("/books/book[position()={i}]/abbrev"))
+                .unwrap()
+            {
                 let t = doc.inner_text(n);
                 abbr.push(t.to_lowercase());
                 abbr.push(t.to_uppercase());
@@ -52,7 +117,12 @@ pub fn tables() -> &'static BookTables {
             }
             possible_abbr.push(abbr);
         }
-        BookTables { chapter_count, verse_count, possible_abbr, book_doc: doc }
+        BookTables {
+            chapter_count,
+            verse_count,
+            possible_abbr,
+            book_doc: doc,
+        }
     })
 }
 
@@ -81,12 +151,17 @@ pub fn get_book_no(book_name: &str) -> i32 {
     let names = book_names();
     for book_no in 1..=names.len() as i32 {
         let idx = zefania_book_no_to_index(book_no);
-        if names.get(idx).is_some_and(|n| n.to_lowercase() == want) || SHORT_BOOK_NAMES[(book_no - 1) as usize].to_lowercase() == want {
+        if names.get(idx).is_some_and(|n| n.to_lowercase() == want)
+            || SHORT_BOOK_NAMES[(book_no - 1) as usize].to_lowercase() == want
+        {
             return book_no;
         }
     }
     for book_no in 1..=names.len() as i32 {
-        if names.get(zefania_book_no_to_index(book_no)).is_some_and(|n| want.contains(&n.to_lowercase())) {
+        if names
+            .get(zefania_book_no_to_index(book_no))
+            .is_some_and(|n| want.contains(&n.to_lowercase()))
+        {
             return book_no;
         }
     }
@@ -102,11 +177,18 @@ pub fn get_chapter_count(book_no: i32) -> i32 {
 }
 
 pub fn convert_pdb_bk_no_to_normal_bk_no(pdb: i32) -> Option<i32> {
-    PDB_BOOK_NUMBERS.iter().position(|&x| x == pdb).map(|i| i as i32 + 1)
+    PDB_BOOK_NUMBERS
+        .iter()
+        .position(|&x| x == pdb)
+        .map(|i| i as i32 + 1)
 }
 
 pub fn sword_book_abbr_to_zefania_book_no(abbr: &str) -> i32 {
-    let n = SWORD_BOOK_ABBR_IN_ZEFANIA_INDEX.iter().position(|&x| x == abbr).map(|i| i as i32 + 1).unwrap_or(0);
+    let n = SWORD_BOOK_ABBR_IN_ZEFANIA_INDEX
+        .iter()
+        .position(|&x| x == abbr)
+        .map(|i| i as i32 + 1)
+        .unwrap_or(0);
     if n > 89 {
         n + 811
     } else {
@@ -115,7 +197,11 @@ pub fn sword_book_abbr_to_zefania_book_no(abbr: &str) -> i32 {
 }
 
 pub fn zefania_book_no_to_index(book_no: i32) -> usize {
-    (if book_no > 900 { book_no - 811 - 1 } else { book_no - 1 }) as usize
+    (if book_no > 900 {
+        book_no - 811 - 1
+    } else {
+        book_no - 1
+    }) as usize
 }
 
 pub fn zefania_index_to_book_no(idx: i32) -> i32 {
@@ -129,11 +215,19 @@ pub fn zefania_index_to_book_no(idx: i32) -> i32 {
 /// `FormatUtil.EscapeXML`. The replacement order is the original's, so `&`
 /// produced by earlier steps is escaped again (`'` → `&amp;apos;`).
 pub fn escape_xml(s: &str) -> String {
-    s.replace('\'', "&apos;").replace('"', "&quot;").replace('>', "&gt;").replace('<', "&lt;").replace('&', "&amp;")
+    s.replace('\'', "&apos;")
+        .replace('"', "&quot;")
+        .replace('>', "&gt;")
+        .replace('<', "&lt;")
+        .replace('&', "&amp;")
 }
 
 pub fn unescape_xml(s: &str) -> String {
-    s.replace("&apos;", "'").replace("&quot;", "\"").replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
+    s.replace("&apos;", "'")
+        .replace("&quot;", "\"")
+        .replace("&gt;", ">")
+        .replace("&lt;", "<")
+        .replace("&amp;", "&")
 }
 
 pub fn get_rtf_unicode_escaped_string(s: &str) -> String {
@@ -150,7 +244,8 @@ pub fn get_rtf_unicode_escaped_string(s: &str) -> String {
 
 /// Index of the first common zlib header (`78 9C` / `78 DA`) before `till`.
 pub fn find_zlib_header_idx(bytes: &[u8], till: usize) -> Option<usize> {
-    (0..till.min(bytes.len().saturating_sub(1))).find(|&i| bytes[i] == 0x78 && (bytes[i + 1] == 0x9C || bytes[i + 1] == 0xDA))
+    (0..till.min(bytes.len().saturating_sub(1)))
+        .find(|&i| bytes[i] == 0x78 && (bytes[i + 1] == 0x9C || bytes[i + 1] == 0xDA))
 }
 
 #[cfg(test)]

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/sbr-xml", "crates/sbr-core"]
+members = ["crates/sbr-xml", "crates/sbr-core", "crates/sbr-cli"]
 
 [workspace.package]
 version = "5.6.2"

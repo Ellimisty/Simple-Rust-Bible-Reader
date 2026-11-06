@@ -1,20 +1,21 @@
 //! Port of the non-UI core of Simple Bible Reader 5.6.2.
 
+pub mod bible_format;
+pub mod dotnet;
 pub mod format_util;
+pub mod formats;
+pub mod global_memory;
+pub mod io;
 pub mod localization;
+pub mod post_process;
 
-static LOCALE: std::sync::RwLock<String> = std::sync::RwLock::new(String::new());
+pub const AUTHOR_WEBSITE: &str = "trumpet-call.org/simplebiblereader/";
 
-/// `GlobalMemory.Locale` (defaults to `"en"`).
+/// `GlobalMemory.Locale`.
 pub fn global_locale() -> String {
-    let l = LOCALE.read().unwrap();
-    if l.is_empty() {
-        "en".into()
-    } else {
-        l.clone()
-    }
+    global_memory::get().locale.clone()
 }
 
 pub fn set_global_locale(l: &str) {
-    *LOCALE.write().unwrap() = l.to_string();
+    global_memory::get_mut().locale = l.to_string();
 }

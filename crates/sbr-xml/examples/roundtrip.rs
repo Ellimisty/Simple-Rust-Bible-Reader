@@ -1,6 +1,8 @@
 //! Loads an XML file and prints `OuterXml` (for differential checks against .NET).
 fn main() {
-    let path = std::env::args().nth(1).expect("usage: roundtrip <file.xml>");
+    let path = std::env::args()
+        .nth(1)
+        .expect("usage: roundtrip <file.xml>");
     let mut d = sbr_xml::Document::new();
     let t = std::time::Instant::now();
     d.load_file(&path).unwrap_or_else(|e| panic!("{e}"));

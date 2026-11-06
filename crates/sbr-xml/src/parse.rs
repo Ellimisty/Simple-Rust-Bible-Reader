@@ -14,7 +14,11 @@ pub struct ParseError {
 
 impl ParseError {
     pub(crate) fn new(message: impl Into<String>, line: usize, column: usize) -> Self {
-        ParseError { message: message.into(), line, column }
+        ParseError {
+            message: message.into(),
+            line,
+            column,
+        }
     }
 }
 
@@ -23,7 +27,11 @@ impl fmt::Display for ParseError {
         if self.line == 0 {
             write!(f, "{}", self.message)
         } else {
-            write!(f, "{} Line {}, position {}.", self.message, self.line, self.column)
+            write!(
+                f,
+                "{} Line {}, position {}.",
+                self.message, self.line, self.column
+            )
         }
     }
 }
@@ -52,13 +60,22 @@ pub fn decode(bytes: &[u8]) -> Result<String, ParseError> {
             if let Some(end) = head.find("?>") {
                 let decl = &head[..end];
                 if let Some(p) = decl.find("encoding") {
-                    let rest = decl[p + 8..].trim_start().trim_start_matches('=').trim_start();
+                    let rest = decl[p + 8..]
+                        .trim_start()
+                        .trim_start_matches('=')
+                        .trim_start();
                     let q = rest.chars().next().unwrap_or('"');
                     if let Some(label) = rest.get(1..).and_then(|r| r.split(q).next()) {
                         match Encoding::for_label(label.trim().as_bytes()) {
                             Some(e) if e == UTF_16LE || e == UTF_16BE => {}
                             Some(e) => enc = e,
-                            None => return Err(ParseError::new(format!("System does not support '{label}' encoding."), 1, p + 1)),
+                            None => {
+                                return Err(ParseError::new(
+                                    format!("System does not support '{label}' encoding."),
+                                    1,
+                                    p + 1,
+                                ))
+                            }
                         }
                     }
                 }
@@ -68,7 +85,11 @@ pub fn decode(bytes: &[u8]) -> Result<String, ParseError> {
     };
     match enc.decode_without_bom_handling_and_without_replacement(body) {
         Some(s) => Ok(s.into_owned()),
-        None => Err(ParseError::new("Invalid character in the given encoding.", 0, 0)),
+        None => Err(ParseError::new(
+            "Invalid character in the given encoding.",
+            0,
+            0,
+        )),
     }
 }
 
@@ -81,7 +102,37 @@ fn is_valid_char(c: char) -> bool {
 }
 
 fn is_name_char(c: char) -> bool {
-    !(is_ws(c) || matches!(c, '<' | '>' | '/' | '=' | '"' | '\'' | '&' | ';' | '?' | '!' | '[' | ']' | '(' | ')' | '%' | ',' | '|' | '*' | '+' | '{' | '}' | '`' | '^' | '~' | '$' | '#' | '@' | '\\'))
+    !(is_ws(c)
+        || matches!(
+            c,
+            '<' | '>'
+                | '/'
+                | '='
+                | '"'
+                | '\''
+                | '&'
+                | ';'
+                | '?'
+                | '!'
+                | '['
+                | ']'
+                | '('
+                | ')'
+                | '%'
+                | ','
+                | '|'
+                | '*'
+                | '+'
+                | '{'
+                | '}'
+                | '`'
+                | '^'
+                | '~'
+                | '$'
+                | '#'
+                | '@'
+                | '\\'
+        ))
         && is_valid_char(c)
 }
 
@@ -109,7 +160,12 @@ impl<'a> Parser<'a> {
     fn err_at<T>(&self, pos: usize, msg: impl Into<String>) -> Result<T, ParseError> {
         let before = &self.src[..pos.min(self.src.len())];
         let line = before.matches('\n').count() + 1;
-        let col = before.rsplit('\n').next().map(|l| l.chars().count()).unwrap_or(0) + 1;
+        let col = before
+            .rsplit('\n')
+            .next()
+            .map(|l| l.chars().count())
+            .unwrap_or(0)
+            + 1;
         Err(ParseError::new(msg, line, col))
     }
 
@@ -147,7 +203,9 @@ impl<'a> Parser<'a> {
             Ok(())
         } else {
             match self.peek() {
-                Some(c) => self.err(format!("'{c}' is an unexpected token. The expected token is '{s}'.")),
+                Some(c) => self.err(format!(
+                    "'{c}' is an unexpected token. The expected token is '{s}'."
+                )),
                 None => self.err("Unexpected end of file has occurred."),
             }
         }
@@ -157,7 +215,12 @@ impl<'a> Parser<'a> {
         let start = self.pos;
         match self.peek() {
             Some(c) if is_name_start(c) => self.bump(c.len_utf8()),
-            Some(c) => return self.err(format!("Name cannot begin with the '{c}' character, hexadecimal value 0x{:02X}.", c as u32)),
+            Some(c) => {
+                return self.err(format!(
+                    "Name cannot begin with the '{c}' character, hexadecimal value 0x{:02X}.",
+                    c as u32
+                ))
+            }
             None => return self.err("Unexpected end of file has occurred."),
         }
         while let Some(c) = self.peek() {
@@ -193,10 +256,23 @@ impl<'a> Parser<'a> {
                 return self.err("An error occurred while parsing EntityName.");
             }
             self.bump(1);
-            let v = if hex { u32::from_str_radix(digits, 16) } else { digits.parse::<u32>() };
+            let v = if hex {
+                u32::from_str_radix(digits, 16)
+            } else {
+                digits.parse::<u32>()
+            };
             match v.ok().and_then(char::from_u32) {
                 Some(c) if is_valid_char(c) => out.push(c),
-                _ => return self.err_at(start, format!("Invalid character reference '&#{}{}'.", if hex { "x" } else { "" }, digits)),
+                _ => {
+                    return self.err_at(
+                        start,
+                        format!(
+                            "Invalid character reference '&#{}{}'.",
+                            if hex { "x" } else { "" },
+                            digits
+                        ),
+                    )
+                }
             }
             return Ok(());
         }
@@ -213,7 +289,12 @@ impl<'a> Parser<'a> {
             "apos" => out.push('\''),
             _ => match doc.entities.get(name) {
                 Some(v) => out.push_str(v),
-                None => return self.err_at(start + 1, format!("Reference to undeclared entity '{name}'.")),
+                None => {
+                    return self.err_at(
+                        start + 1,
+                        format!("Reference to undeclared entity '{name}'."),
+                    )
+                }
             },
         }
         Ok(())
@@ -222,7 +303,11 @@ impl<'a> Parser<'a> {
     fn attr_value(&mut self, doc: &Document) -> Result<String, ParseError> {
         let q = match self.peek() {
             Some(c @ ('"' | '\'')) => c,
-            _ => return self.err("There is no Unicode byte order mark... or quote: '\"' or ''' is expected."),
+            _ => {
+                return self.err(
+                    "There is no Unicode byte order mark... or quote: '\"' or ''' is expected.",
+                )
+            }
         };
         self.bump(1);
         let mut v = String::new();
@@ -234,8 +319,16 @@ impl<'a> Parser<'a> {
                     return Ok(v);
                 }
                 Some('&') => self.reference(doc, &mut v)?,
-                Some('<') => return self.err("'<', hexadecimal value 0x3C, is an invalid attribute character."),
-                Some(c) if !is_valid_char(c) => return self.err(format!("'{c}', hexadecimal value 0x{:02X}, is an invalid character.", c as u32)),
+                Some('<') => {
+                    return self
+                        .err("'<', hexadecimal value 0x3C, is an invalid attribute character.")
+                }
+                Some(c) if !is_valid_char(c) => {
+                    return self.err(format!(
+                        "'{c}', hexadecimal value 0x{:02X}, is an invalid character.",
+                        c as u32
+                    ))
+                }
                 Some(c) => {
                     v.push(c);
                     self.bump(c.len_utf8());
@@ -249,12 +342,17 @@ impl<'a> Parser<'a> {
             Some(i) => {
                 let s = &self.src[self.pos..self.pos + i];
                 if let Some(c) = s.chars().find(|&c| !is_valid_char(c)) {
-                    return self.err(format!("'{c}', hexadecimal value 0x{:02X}, is an invalid character.", c as u32));
+                    return self.err(format!(
+                        "'{c}', hexadecimal value 0x{:02X}, is an invalid character.",
+                        c as u32
+                    ));
                 }
                 self.bump(i + end.len());
                 Ok(s)
             }
-            None => self.err(format!("Unexpected end of file while parsing {what} has occurred.")),
+            None => self.err(format!(
+                "Unexpected end of file while parsing {what} has occurred."
+            )),
         }
     }
 
@@ -291,7 +389,9 @@ impl<'a> Parser<'a> {
             let start = self.pos;
             let mut depth_quote: Option<char> = None;
             loop {
-                let Some(c) = self.peek() else { return self.err("Unexpected end of file while parsing DTD has occurred.") };
+                let Some(c) = self.peek() else {
+                    return self.err("Unexpected end of file while parsing DTD has occurred.");
+                };
                 match depth_quote {
                     Some(q) if c == q => depth_quote = None,
                     Some(_) => {}
@@ -308,7 +408,12 @@ impl<'a> Parser<'a> {
             self.skip_ws();
         }
         self.expect(">")?;
-        Ok(Kind::DocType { name, public_id, system_id, subset })
+        Ok(Kind::DocType {
+            name,
+            public_id,
+            system_id,
+            subset,
+        })
     }
 }
 
@@ -320,7 +425,9 @@ fn parse_entities(subset: &str, doc: &mut Document) {
         if t.starts_with('%') {
             continue;
         }
-        let Some(name_end) = t.find(|c: char| is_ws(c)) else { break };
+        let Some(name_end) = t.find(|c: char| is_ws(c)) else {
+            break;
+        };
         let name = &t[..name_end];
         let after = t[name_end..].trim_start();
         let Some(q) = after.chars().next() else { break };
@@ -330,9 +437,18 @@ fn parse_entities(subset: &str, doc: &mut Document) {
         if let Some(end) = after[1..].find(q) {
             let raw = &after[1..1 + end];
             let mut v = String::new();
-            let mut p = Parser { src: raw, pos: 0, fragment: true };
+            let mut p = Parser {
+                src: raw,
+                pos: 0,
+                fragment: true,
+            };
             while let Some(c) = p.peek() {
-                if c == '&' && (raw[p.pos..].starts_with("&#") || ["&lt;", "&gt;", "&amp;", "&quot;", "&apos;"].iter().any(|e| raw[p.pos..].starts_with(e))) {
+                if c == '&'
+                    && (raw[p.pos..].starts_with("&#")
+                        || ["&lt;", "&gt;", "&amp;", "&quot;", "&apos;"]
+                            .iter()
+                            .any(|e| raw[p.pos..].starts_with(e)))
+                {
                     if p.reference(doc, &mut v).is_err() {
                         break;
                     }
@@ -350,8 +466,18 @@ fn parse_entities(subset: &str, doc: &mut Document) {
 ///
 /// `fragment` selects `InnerXml` semantics (whitespace kept, no root-level
 /// restrictions); otherwise document rules apply.
-pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment: bool, _document_mode: bool) -> Result<(), ParseError> {
-    let mut p = Parser { src: xml, pos: 0, fragment };
+pub(crate) fn parse_into(
+    doc: &mut Document,
+    parent: NodeId,
+    xml: &str,
+    fragment: bool,
+    _document_mode: bool,
+) -> Result<(), ParseError> {
+    let mut p = Parser {
+        src: xml,
+        pos: 0,
+        fragment,
+    };
     let preserve_all = fragment || doc.preserve_whitespace;
     let inherited_preserve = {
         let mut cur = Some(parent);
@@ -365,7 +491,10 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
         }
         v
     };
-    let mut stack: Vec<Frame> = vec![Frame { node: parent, preserve: inherited_preserve }];
+    let mut stack: Vec<Frame> = vec![Frame {
+        node: parent,
+        preserve: inherited_preserve,
+    }];
     let mut seen_root = false;
     let mut text = String::new();
     let mut text_start = 0usize;
@@ -411,7 +540,10 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
                 p.reference(doc, &mut text)?;
                 text_is_ws = false;
             } else if !is_valid_char(c) {
-                return p.err(format!("'{c}', hexadecimal value 0x{:02X}, is an invalid character.", c as u32));
+                return p.err(format!(
+                    "'{c}', hexadecimal value 0x{:02X}, is an invalid character.",
+                    c as u32
+                ));
             } else {
                 if !is_ws(c) {
                     text_is_ws = false;
@@ -477,7 +609,10 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
             let top = stack.pop().unwrap();
             let open = doc.name(top.node);
             if open != name {
-                return p.err_at(start + 2, format!("The '{open}' start tag does not match the end tag of '{name}'."));
+                return p.err_at(
+                    start + 2,
+                    format!("The '{open}' start tag does not match the end tag of '{name}'."),
+                );
             }
             if let Kind::Element { full_end, .. } = &mut doc.nodes[top.node.0].kind {
                 *full_end = true;
@@ -492,7 +627,12 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
                 seen_root = true;
             }
             let name = p.name()?.to_string();
-            let el = doc.alloc(Kind::Element { name: name.clone(), ns: String::new(), attrs: Vec::new(), full_end: false });
+            let el = doc.alloc(Kind::Element {
+                name: name.clone(),
+                ns: String::new(),
+                attrs: Vec::new(),
+                full_end: false,
+            });
             let mut preserve = stack.last().unwrap().preserve;
             loop {
                 let had_ws = p.skip_ws();
@@ -513,7 +653,11 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
                 if an == "xml:space" {
                     preserve = av == "preserve";
                 }
-                let a = doc.alloc(Kind::Attribute { ns: attr_ns_for(&an), name: an, value: av });
+                let a = doc.alloc(Kind::Attribute {
+                    ns: attr_ns_for(&an),
+                    name: an,
+                    value: av,
+                });
                 doc.append_attribute(el, a);
             }
             doc.append_child(stack.last().unwrap().node, el);
@@ -532,7 +676,9 @@ pub(crate) fn parse_into(doc: &mut Document, parent: NodeId, xml: &str, fragment
     }
     if stack.len() > 1 {
         let n = doc.name(stack.last().unwrap().node).to_string();
-        return p.err(format!("Unexpected end of file has occurred. The following elements are not closed: {n}."));
+        return p.err(format!(
+            "Unexpected end of file has occurred. The following elements are not closed: {n}."
+        ));
     }
     if !p.fragment && !seen_root {
         return p.err("Root element is missing.");
@@ -568,10 +714,21 @@ fn resolve_ns(doc: &mut Document, el: NodeId, p: &Parser<'_>, at: usize) -> Resu
 
 fn parse_decl(data: &str) -> Kind {
     let get = |key: &str| -> String {
-        let Some(i) = data.find(key) else { return String::new() };
-        let rest = data[i + key.len()..].trim_start().trim_start_matches('=').trim_start();
-        let Some(q) = rest.chars().next() else { return String::new() };
+        let Some(i) = data.find(key) else {
+            return String::new();
+        };
+        let rest = data[i + key.len()..]
+            .trim_start()
+            .trim_start_matches('=')
+            .trim_start();
+        let Some(q) = rest.chars().next() else {
+            return String::new();
+        };
         rest[1..].split(q).next().unwrap_or("").to_string()
     };
-    Kind::XmlDecl { version: get("version"), encoding: get("encoding"), standalone: get("standalone") }
+    Kind::XmlDecl {
+        version: get("version"),
+        encoding: get("encoding"),
+        standalone: get("standalone"),
+    }
 }

@@ -51,3 +51,19 @@ writes `\r\n` in a few places.
 
 The `sbr-xml` round trip of the 16 MB KJV+ Zefania file is byte-identical to the original's
 Zefania export.
+
+## Intentional deviations
+
+- VPL, Crosswire style `Book.Chapter.Verse text`: the original appended the
+  dot-separated fields after the verse number to the verse text a second
+  time; the port keeps only the text after the first space.
+
+## Running the CLI
+
+```sh
+cargo run --release -p sbr-cli -- convert [--newline lf|crlf] <input> <input-format|0> <output> <output-format>
+```
+
+Format numbers are the original filter indices (`1` Zefania, `12` VPL, ...);
+`0` autodetects the input. `crates/sbr-core/tests/differential.rs` checks the
+port against outputs captured from the original under Mono (`--newline lf`).
