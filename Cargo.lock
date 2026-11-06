@@ -59,6 +59,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
+name = "sbr-core"
+version = "5.6.2"
+dependencies = [
+ "sbr-xml",
+]
+
+[[package]]
 name = "sbr-xml"
 version = "5.6.2"
 dependencies = [

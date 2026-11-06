@@ -1,0 +1,9 @@
+[package]
+name = "sbr-core"
+description = "Formats, model and utilities of Simple Bible Reader"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sbr-xml.workspace = true
