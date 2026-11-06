@@ -12,14 +12,16 @@ fn fixture(name: &str) -> String {
         .into_owned()
 }
 
-fn convert(input: &str, from: i32, to: i32, ext: &str) -> Vec<u8> {
-    let out =
-        std::env::temp_dir().join(format!("sbr_test_{}_{from}_{to}.{ext}", std::process::id()));
-    let out = out.to_string_lossy().into_owned();
+/// Exports under the reference file's name: formats without stored metadata
+/// derive the description/abbreviation from the output file name.
+fn convert(input: &str, from: i32, to: i32, name: &str) -> Vec<u8> {
+    let dir = std::env::temp_dir().join(format!("sbr_test_{}_{from}_{to}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let out = dir.join(name).to_string_lossy().into_owned();
     let mut b = bible_format::load(input, from).unwrap();
     bible_format::export(&mut b, &out, to).unwrap();
     let bytes = std::fs::read(&out).unwrap();
-    let _ = std::fs::remove_file(&out);
+    let _ = std::fs::remove_dir_all(&dir);
     bytes
 }
 
@@ -42,8 +44,9 @@ fn matches_original() {
         (vpl.as_str(), 12, 12, "vpl", "expected/out_12_12.vpl"),
         (vpl.as_str(), 0, 1, "xml", "expected/out_12_1.xml"),
     ];
-    for (input, from, to, ext, expected) in cases {
-        let got = convert(input, from, to, ext);
+    for (input, from, to, _ext, expected) in cases {
+        let name = std::path::Path::new(expected).file_name().unwrap();
+        let got = convert(input, from, to, name.to_str().unwrap());
         let want = std::fs::read(fixture(expected)).unwrap();
         assert!(
             got == want,
@@ -103,7 +106,7 @@ fn mysword_matches_original() {
         gz.to_string_lossy().into_owned(),
     ] {
         assert!(
-            convert(&input, 0, 1, "xml") == want,
+            convert(&input, 0, 1, "out_18_1.xml") == want,
             "{input} -> Zefania differs"
         );
     }

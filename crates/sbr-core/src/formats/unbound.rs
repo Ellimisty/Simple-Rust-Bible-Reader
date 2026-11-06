@@ -82,7 +82,7 @@ fn process_line(d: &mut Document, st: &mut State, line: &str) -> Result<()> {
     // Lines with another column count (e.g. "filetype") keep the previous
     // values and still go through the element creation below.
     if let Some((first, text)) = cols {
-        st.book_no = parse(&data[first].replace('O', "").replace('N', ""))?;
+        st.book_no = parse(&data[first].replace(['O', 'N'], ""))?;
         st.chap_no = parse(data[first + 1])?;
         st.verse_no = parse(data[first + 2])?;
         st.text = data[text].to_string();
