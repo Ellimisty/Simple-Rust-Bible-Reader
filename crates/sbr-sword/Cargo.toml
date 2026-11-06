@@ -1,0 +1,9 @@
+[package]
+name = "sbr-sword"
+description = "SWORD module reader/writer (replaces libsword/CSSword)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror.workspace = true

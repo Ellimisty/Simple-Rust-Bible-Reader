@@ -1,0 +1,10 @@
+[package]
+name = "sbr-xml"
+description = "Minimal System.Xml.XmlDocument-compatible DOM (parse, serialize, XPath subset)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+encoding_rs.workspace = true
