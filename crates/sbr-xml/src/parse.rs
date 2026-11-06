@@ -234,6 +234,28 @@ impl<'a> Parser<'a> {
     }
 
     /// Parses `&...;` at the cursor and appends its expansion.
+    /// In fragment mode, `&name;` naming an entity that is neither predefined
+    /// nor declared: returns the name and the length of the reference.
+    fn undeclared_entity(&self, doc: &Document) -> Option<(String, usize)> {
+        if !self.fragment {
+            return None;
+        }
+        let rest = self.src[self.pos..].strip_prefix('&')?;
+        let end = rest.find(';')?;
+        let name = &rest[..end];
+        let mut chars = name.chars();
+        let first = chars.next()?;
+        if !(first.is_alphabetic() || first == '_' || first == ':')
+            || !chars.all(|c| c.is_alphanumeric() || matches!(c, '_' | ':' | '-' | '.' | '\u{B7}'))
+        {
+            return None;
+        }
+        if ["lt", "gt", "amp", "quot", "apos"].contains(&name) || doc.entities.contains_key(name) {
+            return None;
+        }
+        Some((name.to_string(), end + 2))
+    }
+
     fn reference(&mut self, doc: &Document, out: &mut String) -> Result<(), ParseError> {
         let start = self.pos;
         self.bump(1);
@@ -536,6 +558,15 @@ pub(crate) fn parse_into(
             if c == '&' {
                 if !p.fragment && stack.len() == 1 {
                     return p.err("Data at the root level is invalid.");
+                }
+                if let Some((name, len)) = p.undeclared_entity(doc) {
+                    // Fragments (`InnerXml`) keep undeclared entities as
+                    // `XmlEntityReference` nodes instead of failing.
+                    flush_text!();
+                    let n = doc.alloc(Kind::EntityRef(name));
+                    doc.append_child(stack.last().unwrap().node, n);
+                    p.bump(len);
+                    continue;
                 }
                 p.reference(doc, &mut text)?;
                 text_is_ws = false;

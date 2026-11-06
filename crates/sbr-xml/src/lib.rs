@@ -33,6 +33,7 @@ pub enum NodeType {
     ProcessingInstruction,
     XmlDeclaration,
     DocumentType,
+    EntityReference,
 }
 
 #[derive(Clone, Debug)]
@@ -52,6 +53,8 @@ pub(crate) enum Kind {
         value: String,
     },
     Text(String),
+    /// Unresolved `XmlEntityReference` (`&name;`), only created by fragment parsing.
+    EntityRef(String),
     CData(String),
     Comment(String),
     Whitespace(String),
@@ -232,6 +235,7 @@ impl Document {
             Kind::Pi { .. } => NodeType::ProcessingInstruction,
             Kind::XmlDecl { .. } => NodeType::XmlDeclaration,
             Kind::DocType { .. } => NodeType::DocumentType,
+            Kind::EntityRef(_) => NodeType::EntityReference,
         }
     }
 
@@ -317,7 +321,7 @@ impl Document {
             Kind::SignificantWhitespace(_) => "#significant-whitespace",
             Kind::Pi { target, .. } => target,
             Kind::XmlDecl { .. } => "xml",
-            Kind::DocType { name, .. } => name,
+            Kind::DocType { name, .. } | Kind::EntityRef(name) => name,
         }
     }
 

@@ -43,3 +43,61 @@ fn matches_original() {
         );
     }
 }
+
+fn dump(path: &str) -> Vec<String> {
+    let c = rusqlite::Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+        .unwrap();
+    let mut out = Vec::new();
+    for q in [
+        "SELECT sql FROM sqlite_master ORDER BY name",
+        "SELECT * FROM Details",
+        "SELECT * FROM Bible",
+    ] {
+        let mut st = c.prepare(q).unwrap();
+        let n = st.column_count();
+        let mut rows = st.query([]).unwrap();
+        while let Some(r) = rows.next().unwrap() {
+            out.push(
+                (0..n)
+                    .map(|i| format!("{:?}", r.get_ref(i).unwrap()))
+                    .collect::<Vec<_>>()
+                    .join("|"),
+            );
+        }
+    }
+    out
+}
+
+#[test]
+fn mysword_matches_original() {
+    let dir = std::env::temp_dir().join(format!("sbr_mysword_test_{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let out = dir
+        .join("out_18.bbl.mybible.gz")
+        .to_string_lossy()
+        .into_owned();
+    let mut b = bible_format::load(&fixture("kjvplus_ruth_jude.xml"), 1).unwrap();
+    bible_format::export(&mut b, &out, 18).unwrap();
+    let db = &out[..out.len() - 3];
+    assert_eq!(dump(db), dump(&fixture("expected/out_18.bbl.mybible")));
+
+    let want = std::fs::read(fixture("expected/out_18_1.xml")).unwrap();
+    let gz = dir.join("in.bbl.mybible.gz");
+    let mut enc = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+    std::io::Write::write_all(
+        &mut enc,
+        &std::fs::read(fixture("expected/out_18.bbl.mybible")).unwrap(),
+    )
+    .unwrap();
+    std::fs::write(&gz, enc.finish().unwrap()).unwrap();
+    for input in [
+        fixture("expected/out_18.bbl.mybible"),
+        gz.to_string_lossy().into_owned(),
+    ] {
+        assert!(
+            convert(&input, 0, 1, "xml") == want,
+            "{input} -> Zefania differs"
+        );
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}

@@ -137,3 +137,18 @@ fn xpath_basics() {
     let v = crate::xpath::evaluate(&d, r, "count(//VERS) * 2 + 1", &Namespaces::new()).unwrap();
     assert!(matches!(v, crate::xpath::Value::Num(n) if n == 9.0));
 }
+
+#[test]
+fn undeclared_entity_in_fragment() {
+    // Captured from Mono's System.Xml.
+    let mut d = Document::new();
+    let r = d.root();
+    let e = d.create_element("V");
+    d.append_child(r, e);
+    d.set_inner_xml(e, "a<gr str=\"1\">&nbsp;</gr>b&amp;&#65;")
+        .unwrap();
+    assert_eq!(d.inner_xml(e), "a<gr str=\"1\">&nbsp;</gr>b&amp;A");
+    assert_eq!(d.inner_text(e), "ab&A");
+    assert!(d.set_inner_xml(e, "x&nbsp").is_err());
+    assert!(Document::parse("<a>&nbsp;</a>").is_err());
+}

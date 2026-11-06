@@ -146,6 +146,8 @@ pub fn detect(filename: &str) -> Result<i32> {
         }
     } else if lower.ends_with(".vpl") {
         return Ok(F13_VPL);
+    } else if lower.ends_with(".bbl.mybible.gz") || lower.ends_with(".bbl.mybible") {
+        return Ok(F19_MYSWORD);
     }
     Err(Error::Unknown(filename.into()))
 }
@@ -162,6 +164,7 @@ pub fn load(filename: &str, filter_idx: i32) -> Result<Bible> {
     match idx {
         F02_ZEFANIA_BIBLE => formats::zefania::load(&mut b, filename)?,
         F13_VPL => formats::vpl::load(&mut b, filename)?,
+        F19_MYSWORD => formats::mysword::load(&mut b, filename)?,
         _ => return Err(Error::Unsupported(idx)),
     }
     Ok(b)
@@ -173,6 +176,7 @@ pub fn export(b: &mut Bible, filename: &str, filter_idx: i32) -> Result<()> {
     match filter_idx {
         F02_ZEFANIA_BIBLE => formats::zefania::export(b, &meta, filename),
         F13_VPL => formats::vpl::export(b, &meta, filename),
+        F19_MYSWORD => formats::mysword::export(b, &meta, filename),
         _ => Err(Error::Unsupported(filter_idx)),
     }
 }

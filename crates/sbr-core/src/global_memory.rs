@@ -8,6 +8,8 @@ pub struct GlobalMemory {
     pub parse_bible_bkgnd_cleaner: bool,
     pub console_mode: bool,
     pub locale: String,
+    /// `GlobalMemory.Direction` (0 = left to right).
+    pub direction: i32,
     /// `Environment.NewLine` used by `StreamWriter.WriteLine`.
     pub newline: String,
 }
@@ -19,6 +21,7 @@ impl Default for GlobalMemory {
             parse_bible_bkgnd_cleaner: true,
             console_mode: false,
             locale: "en".into(),
+            direction: 0,
             newline: if cfg!(windows) { "\r\n" } else { "\n" }.into(),
         }
     }

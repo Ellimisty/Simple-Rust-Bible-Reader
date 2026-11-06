@@ -131,6 +131,11 @@ fn start_tag(doc: &Document, n: NodeId, scope: &mut Scope, out: &mut String) -> 
 fn leaf(doc: &Document, n: NodeId, out: &mut String) {
     match doc.kind(n) {
         Kind::Text(s) => escape_text_into(s, out),
+        Kind::EntityRef(name) => {
+            out.push('&');
+            out.push_str(name);
+            out.push(';');
+        }
         Kind::CData(s) => {
             out.push_str("<![CDATA[");
             out.push_str(s);
@@ -283,6 +288,7 @@ impl Indenter<'_> {
                 self.scope.truncate(self.scope.len() - pushed);
             }
             Kind::Text(_)
+            | Kind::EntityRef(_)
             | Kind::CData(_)
             | Kind::Whitespace(_)
             | Kind::SignificantWhitespace(_) => {
