@@ -28,8 +28,16 @@ fn matches_original() {
     global_memory::get_mut().newline = "\n".into();
     let src = fixture("kjvplus_ruth_jude.xml");
     let vpl = fixture("expected/out_12.vpl");
+    let ub2 = fixture("expected/out_2.txt");
+    let ub3 = fixture("expected/out_3.txt");
     let cases = [
         (src.as_str(), 1, 1, "xml", "expected/out_1.xml"),
+        (src.as_str(), 1, 2, "txt", "expected/out_2.txt"),
+        (src.as_str(), 1, 3, "txt", "expected/out_3.txt"),
+        (ub2.as_str(), 2, 1, "xml", "expected/out_2_1.xml"),
+        (ub3.as_str(), 3, 1, "xml", "expected/out_3_1.xml"),
+        (ub2.as_str(), 0, 2, "txt", "expected/out_2_2.txt"),
+        (ub3.as_str(), 3, 3, "txt", "expected/out_3_3.txt"),
         (src.as_str(), 0, 12, "vpl", "expected/out_12.vpl"),
         (vpl.as_str(), 12, 12, "vpl", "expected/out_12_12.vpl"),
         (vpl.as_str(), 0, 1, "xml", "expected/out_12_1.xml"),

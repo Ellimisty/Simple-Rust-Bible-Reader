@@ -144,6 +144,14 @@ pub fn detect(filename: &str) -> Result<i32> {
         if head.contains("<xmlbible") {
             return Ok(F02_ZEFANIA_BIBLE);
         }
+    } else if lower.ends_with(".txt") {
+        let text = crate::io::read_text_default(filename)?;
+        let first = crate::io::read_lines(&text).first().copied().unwrap_or("");
+        return if first.starts_with(';') {
+            Ok(F30_SWORDSEARCHER)
+        } else {
+            Ok(F03_UNBOUND_BIBLE_BCV)
+        };
     } else if lower.ends_with(".vpl") {
         return Ok(F13_VPL);
     } else if lower.ends_with(".bbl.mybible.gz") || lower.ends_with(".bbl.mybible") {
@@ -163,6 +171,7 @@ pub fn load(filename: &str, filter_idx: i32) -> Result<Bible> {
     b.cleaning = cleaning_required(idx);
     match idx {
         F02_ZEFANIA_BIBLE => formats::zefania::load(&mut b, filename)?,
+        F03_UNBOUND_BIBLE_BCV | F04_UNBOUND_BIBLE_BCVS => formats::unbound::load(&mut b, filename)?,
         F13_VPL => formats::vpl::load(&mut b, filename)?,
         F19_MYSWORD => formats::mysword::load(&mut b, filename)?,
         _ => return Err(Error::Unsupported(idx)),
@@ -175,6 +184,9 @@ pub fn export(b: &mut Bible, filename: &str, filter_idx: i32) -> Result<()> {
     let meta = export_meta(b, filename);
     match filter_idx {
         F02_ZEFANIA_BIBLE => formats::zefania::export(b, &meta, filename),
+        F03_UNBOUND_BIBLE_BCV | F04_UNBOUND_BIBLE_BCVS => {
+            formats::unbound::export(b, &meta, filename, filter_idx)
+        }
         F13_VPL => formats::vpl::export(b, &meta, filename),
         F19_MYSWORD => formats::mysword::export(b, &meta, filename),
         _ => Err(Error::Unsupported(filter_idx)),
