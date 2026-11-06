@@ -67,3 +67,20 @@ cargo run --release -p sbr-cli -- convert [--newline lf|crlf] <input> <input-for
 Format numbers are the original filter indices (`1` Zefania, `12` VPL, ...);
 `0` autodetects the input. `crates/sbr-core/tests/differential.rs` checks the
 port against outputs captured from the original under Mono (`--newline lf`).
+
+## Reference outputs from the original program
+
+`tools/original-harness/setup.sh [dir]` downloads the upstream 5.6.2 installer
+(SHA-256 checked), unpacks it and builds `harness.exe`, which runs the
+original `BibleFactory` → `Load` → `doExportBible` → `ExportBible` pipeline
+headless under Mono:
+
+```sh
+tools/original-harness/setup.sh ~/sbr-original
+mono ~/sbr-original/harness.exe x <input> <input-format|0> <output> <output-format>
+```
+
+Save its outputs under `crates/sbr-core/tests/fixtures/expected/` and add a
+case to `tests/differential.rs`. Mono differences: `Environment.NewLine` is
+`\n`, `Encoding.Default` is UTF-8 (Windows-1252 on .NET Framework), and
+OleDb (Access `.mdb`) is unavailable.
