@@ -12,6 +12,7 @@ pub mod global_memory;
 pub mod io;
 pub mod localization;
 pub mod post_process;
+pub mod render;
 pub mod versification;
 
 pub const AUTHOR_WEBSITE: &str = "trumpet-call.org/simplebiblereader/";

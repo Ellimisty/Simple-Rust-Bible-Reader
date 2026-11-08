@@ -12,6 +12,11 @@ pub struct GlobalMemory {
     pub direction: i32,
     /// `Environment.NewLine` used by `StreamWriter.WriteLine`.
     pub newline: String,
+    pub display_bib_raw: bool,
+    pub commentary_icon: bool,
+    pub selected_theme: String,
+    pub font_family_bib: String,
+    pub font_family_cmt: String,
 }
 
 impl Default for GlobalMemory {
@@ -23,6 +28,11 @@ impl Default for GlobalMemory {
             locale: "en".into(),
             direction: 0,
             newline: if cfg!(windows) { "\r\n" } else { "\n" }.into(),
+            display_bib_raw: false,
+            commentary_icon: true,
+            selected_theme: "Default".into(),
+            font_family_bib: String::new(),
+            font_family_cmt: String::new(),
         }
     }
 }
