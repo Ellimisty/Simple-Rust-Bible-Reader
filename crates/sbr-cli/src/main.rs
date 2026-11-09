@@ -1,20 +1,34 @@
 //! `sbr convert <input> <input-format|0> <output> <output-format>`
 //!
+//! `sbr viz <chart> --xrefs <file> ...` renders cross-reference charts (see `viz.rs`).
+//!
 //! Format numbers are the original filter indices (`F02_ZEFANIA_BIBLE = 1`,
 //! `F13_VPL = 12`, ...); `0` autodetects the input format.
 
 use sbr_core::{bible_format, global_memory};
 use std::process::ExitCode;
 
+mod viz;
+
 fn usage() -> ExitCode {
     eprintln!(
-        "usage: sbr convert [--newline lf|crlf] <input> <input-format|0> <output> <output-format>"
+        "usage: sbr convert [--newline lf|crlf] <input> <input-format|0> <output> <output-format>\n       {}",
+        viz::USAGE
     );
     ExitCode::from(2)
 }
 
 fn main() -> ExitCode {
     let mut args: Vec<String> = std::env::args().skip(1).collect();
+    if args.first().is_some_and(|a| a == "viz") {
+        return match viz::run(&args[1..]) {
+            Ok(()) => ExitCode::SUCCESS,
+            Err(e) => {
+                eprintln!("error: {e}\n{}", viz::USAGE);
+                ExitCode::FAILURE
+            }
+        };
+    }
     if let Some(i) = args.iter().position(|a| a == "--newline") {
         let nl = match args.get(i + 1).map(String::as_str) {
             Some("lf") => "\n",
