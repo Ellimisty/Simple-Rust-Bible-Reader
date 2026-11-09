@@ -11,3 +11,4 @@ path = "src/main.rs"
 
 [dependencies]
 sbr-core.workspace = true
+sbr-viz.workspace = true

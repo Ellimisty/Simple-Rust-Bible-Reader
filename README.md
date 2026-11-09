@@ -14,6 +14,7 @@ against the original executable.
 | crate | purpose |
 |---|---|
 | `sbr-xml` | `System.Xml.XmlDocument`-compatible DOM: parser, `OuterXml`/`Save` serialization, XPath 1.0 |
+| `sbr-viz` | Exportable SVG/PNG cross-reference charts (`sbr viz ...`, see [docs/VISUALS.md](docs/VISUALS.md)) |
 
 More crates (`sbr-core`, `sbr-cli`, `sbr-gui`) are added as the port progresses.
 

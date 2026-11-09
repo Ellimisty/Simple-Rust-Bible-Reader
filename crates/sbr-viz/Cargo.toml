@@ -1,0 +1,19 @@
+[package]
+name = "sbr-viz"
+description = "Exportable cross-reference visualizations (SVG/PNG) for Simple Rust Bible Reader"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = ["png"]
+png = ["dep:resvg"]
+
+[dependencies]
+sbr-core.workspace = true
+thiserror.workspace = true
+zip.workspace = true
+resvg = { workspace = true, optional = true }
+
+[dev-dependencies]
+sbr-xml.workspace = true

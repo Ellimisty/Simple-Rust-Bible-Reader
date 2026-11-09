@@ -5,6 +5,7 @@ members = [
     "crates/sbr-rtf",
     "crates/sbr-sword",
     "crates/sbr-core",
+    "crates/sbr-viz",
     "crates/sbr-cli",
 ]
 
@@ -19,9 +20,11 @@ sbr-xml = { path = "crates/sbr-xml" }
 sbr-core = { path = "crates/sbr-core" }
 sbr-rtf = { path = "crates/sbr-rtf" }
 sbr-sword = { path = "crates/sbr-sword" }
+sbr-viz = { path = "crates/sbr-viz" }
 fancy-regex = "0.14"
 rusqlite = { version = "0.32", features = ["bundled"] }
 flate2 = "1"
 encoding_rs = "0.8"
 thiserror = "1"
 zip = { version = "2", default-features = false, features = ["deflate"] }
+resvg = { version = "0.45", default-features = false, features = ["text", "system-fonts"] }
