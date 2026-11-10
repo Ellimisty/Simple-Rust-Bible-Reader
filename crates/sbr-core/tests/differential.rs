@@ -150,3 +150,16 @@ fn osis_matches_original() {
         .contains("<STYLE css=\"color:#808080;font-style:italic\">"));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn xsem_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let src = fixture("kjvplus_ruth_jude.xml");
+    let got = convert(&src, 1, 6, "out_6.xml");
+    assert!(got == std::fs::read(fixture("expected/out_6.xml")).unwrap());
+    let xsem = fixture("expected/out_6.xml");
+    for from in [6, 0] {
+        let got = convert(&xsem, from, 1, "out_6_1.xml");
+        assert!(got == std::fs::read(fixture("expected/out_6_1.xml")).unwrap());
+    }
+}

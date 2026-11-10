@@ -1,0 +1,607 @@
+﻿<?xml version="1.0"?>
+<scripture>
+  <scriptureHeader>
+    <bookStmt>
+      <bookDecl id="GEN">
+        <bookAbbreviation>GE</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Genesis</shortName>
+        <fullName>The First Book of Moses, called Genesis</fullName>
+      </bookDecl>
+      <bookDecl id="EXO">
+        <bookAbbreviation>EX</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Exodus</shortName>
+        <fullName>The Second Book of Moses, called Exodus</fullName>
+      </bookDecl>
+      <bookDecl id="LEV">
+        <bookAbbreviation>LV</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Leviticus</shortName>
+        <fullName>The Third Book of Moses, called Leviticus</fullName>
+      </bookDecl>
+      <bookDecl id="NUM">
+        <bookAbbreviation>NM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Numbers</shortName>
+        <fullName>The Fourth Book of Moses, called Numbers</fullName>
+      </bookDecl>
+      <bookDecl id="DEU">
+        <bookAbbreviation>DT</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Deuteronomy</shortName>
+        <fullName>The Fifth Book of Moses, called Deuteronomy</fullName>
+      </bookDecl>
+      <bookDecl id="JOS">
+        <bookAbbreviation>JS</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Joshua</shortName>
+        <fullName>The Book of Joshua</fullName>
+      </bookDecl>
+      <bookDecl id="JDG">
+        <bookAbbreviation>JG</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Judges</shortName>
+        <fullName>The Book of Judges</fullName>
+      </bookDecl>
+      <bookDecl id="RUT">
+        <bookAbbreviation>RT</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Ruth</shortName>
+        <fullName>The Book of Ruth</fullName>
+      </bookDecl>
+      <bookDecl id="1SA">
+        <bookAbbreviation>1S</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Samuel</shortName>
+        <fullName>The First Book of SamuelOtherwise Called the First Book of the Kings</fullName>
+      </bookDecl>
+      <bookDecl id="2SA">
+        <bookAbbreviation>2S</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Samuel</shortName>
+        <fullName>The Second Book of SamuelOtherwise Called the Second Book of the Kings</fullName>
+      </bookDecl>
+      <bookDecl id="1KI">
+        <bookAbbreviation>1K</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Kings</shortName>
+        <fullName>The First Book of the KingsCommonly Called the Third Book of the Kings</fullName>
+      </bookDecl>
+      <bookDecl id="2KI">
+        <bookAbbreviation>2K</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Kings</shortName>
+        <fullName>The Second Book of the KingsCommonly Called the Fourth Book of the Kings</fullName>
+      </bookDecl>
+      <bookDecl id="1CH">
+        <bookAbbreviation>1CH</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Chronicles</shortName>
+        <fullName>The First Book of the Chronicles</fullName>
+      </bookDecl>
+      <bookDecl id="2CH">
+        <bookAbbreviation>2CH</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Chronicles</shortName>
+        <fullName>The Second Book of the Chronicles</fullName>
+      </bookDecl>
+      <bookDecl id="EZR">
+        <bookAbbreviation>EZR</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Ezra</shortName>
+        <fullName>Ezra</fullName>
+      </bookDecl>
+      <bookDecl id="NEH">
+        <bookAbbreviation>NE</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Nehemiah</shortName>
+        <fullName>The Book of Nehemiah</fullName>
+      </bookDecl>
+      <bookDecl id="EST">
+        <bookAbbreviation>ES</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Esther</shortName>
+        <fullName>The Book of Esther</fullName>
+      </bookDecl>
+      <bookDecl id="JOB">
+        <bookAbbreviation>JB</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Job</shortName>
+        <fullName>The Book of Job</fullName>
+      </bookDecl>
+      <bookDecl id="PSA">
+        <bookAbbreviation>PS</bookAbbreviation>
+        <chapterSpecifier>Psalm</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Psalms</shortName>
+        <fullName>The Book of Psalms</fullName>
+      </bookDecl>
+      <bookDecl id="PRO">
+        <bookAbbreviation>PR</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Proverbs</shortName>
+        <fullName>The Proverbs</fullName>
+      </bookDecl>
+      <bookDecl id="ECC">
+        <bookAbbreviation>EC</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Ecclesiastes</shortName>
+        <fullName>Ecclesiastesor, the Preacher</fullName>
+      </bookDecl>
+      <bookDecl id="SNG">
+        <bookAbbreviation>SS</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Song of Solomon</shortName>
+        <fullName>The Song of Solomon</fullName>
+      </bookDecl>
+      <bookDecl id="ISA">
+        <bookAbbreviation>IS</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Isaiah</shortName>
+        <fullName>The Book of the Prophet Isaiah</fullName>
+      </bookDecl>
+      <bookDecl id="JER">
+        <bookAbbreviation>JE</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Jeremiah</shortName>
+        <fullName>The Book of the Prophet Jeremiah</fullName>
+      </bookDecl>
+      <bookDecl id="LAM">
+        <bookAbbreviation>LM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Lamentations</shortName>
+        <fullName>The Lamentations of Jeremiah</fullName>
+      </bookDecl>
+      <bookDecl id="EZK">
+        <bookAbbreviation>EZK</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Ezekiel</shortName>
+        <fullName>The Book of the Prophet Ezekiel</fullName>
+      </bookDecl>
+      <bookDecl id="DAN">
+        <bookAbbreviation>DN</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Daniel</shortName>
+        <fullName>The Book of Daniel</fullName>
+      </bookDecl>
+      <bookDecl id="HOS">
+        <bookAbbreviation>HS</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Hosea</shortName>
+        <fullName>Hosea</fullName>
+      </bookDecl>
+      <bookDecl id="JOL">
+        <bookAbbreviation>JL</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Joel</shortName>
+        <fullName>Joel</fullName>
+      </bookDecl>
+      <bookDecl id="AMO">
+        <bookAbbreviation>AM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Amos</shortName>
+        <fullName>Amos</fullName>
+      </bookDecl>
+      <bookDecl id="OBA">
+        <bookAbbreviation>OB</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Obadiah</shortName>
+        <fullName>Obadiah</fullName>
+      </bookDecl>
+      <bookDecl id="JON">
+        <bookAbbreviation>JO</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Jonah</shortName>
+        <fullName>Jonah</fullName>
+      </bookDecl>
+      <bookDecl id="MIC">
+        <bookAbbreviation>MC</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Micah</shortName>
+        <fullName>Micah</fullName>
+      </bookDecl>
+      <bookDecl id="NAM">
+        <bookAbbreviation>NM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Nahum</shortName>
+        <fullName>Nahum</fullName>
+      </bookDecl>
+      <bookDecl id="HAB">
+        <bookAbbreviation>HB</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Habakkuk</shortName>
+        <fullName>Habakkuk</fullName>
+      </bookDecl>
+      <bookDecl id="ZEP">
+        <bookAbbreviation>ZP</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Zephaniah</shortName>
+        <fullName>Zephaniah</fullName>
+      </bookDecl>
+      <bookDecl id="HAG">
+        <bookAbbreviation>HG</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Haggai</shortName>
+        <fullName>Haggai</fullName>
+      </bookDecl>
+      <bookDecl id="ZEC">
+        <bookAbbreviation>ZC</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Zechariah</shortName>
+        <fullName>Zechariah</fullName>
+      </bookDecl>
+      <bookDecl id="MAL">
+        <bookAbbreviation>ML</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Malachi</shortName>
+        <fullName>Malachi</fullName>
+      </bookDecl>
+      <bookDecl id="MAT">
+        <bookAbbreviation>MT</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Matthew</shortName>
+        <fullName>The Gospel According to St. Matthew</fullName>
+      </bookDecl>
+      <bookDecl id="MRK">
+        <bookAbbreviation>MK</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Mark</shortName>
+        <fullName>The Gospel According to St. Mark</fullName>
+      </bookDecl>
+      <bookDecl id="LUK">
+        <bookAbbreviation>LK</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Luke</shortName>
+        <fullName>The Gospel According to St. Luke</fullName>
+      </bookDecl>
+      <bookDecl id="JHN">
+        <bookAbbreviation>JN</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>John</shortName>
+        <fullName>The Gospel According to St. John</fullName>
+      </bookDecl>
+      <bookDecl id="ACT">
+        <bookAbbreviation>AC</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Acts</shortName>
+        <fullName>The Acts of the Apostles</fullName>
+      </bookDecl>
+      <bookDecl id="ROM">
+        <bookAbbreviation>RM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Romans</shortName>
+        <fullName>The Epistle of Paul the Apostle to the Romans</fullName>
+      </bookDecl>
+      <bookDecl id="1CO">
+        <bookAbbreviation>1CO</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Corinthians</shortName>
+        <fullName>The First Epistle of Paul the Apostle to the Corinthians</fullName>
+      </bookDecl>
+      <bookDecl id="2CO">
+        <bookAbbreviation>2CO</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Corinthians</shortName>
+        <fullName>The Second Epistle of Paul the Apostle to the Corinthians</fullName>
+      </bookDecl>
+      <bookDecl id="GAL">
+        <bookAbbreviation>GL</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Galatians</shortName>
+        <fullName>The Epistle of Paul the Apostle to the Galatians</fullName>
+      </bookDecl>
+      <bookDecl id="EPH">
+        <bookAbbreviation>EP</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Ephesians</shortName>
+        <fullName>The Epistle of Paul the Apostle to the Ephesians</fullName>
+      </bookDecl>
+      <bookDecl id="PHP">
+        <bookAbbreviation>PHP</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Philippians</shortName>
+        <fullName>The Epistle of Paul the Apostle to the Philippians</fullName>
+      </bookDecl>
+      <bookDecl id="COL">
+        <bookAbbreviation>CL</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Colossians</shortName>
+        <fullName>The Epistle of Paul the Apostle to the Colossians</fullName>
+      </bookDecl>
+      <bookDecl id="1TH">
+        <bookAbbreviation>1TH</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Thessalonians</shortName>
+        <fullName>The First Epistle of Paul to the Thessalonians</fullName>
+      </bookDecl>
+      <bookDecl id="2TH">
+        <bookAbbreviation>2TH</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Thessalonians</shortName>
+        <fullName>The Second Epistle of Paul the Apostle to the Thessalonians</fullName>
+      </bookDecl>
+      <bookDecl id="1TI">
+        <bookAbbreviation>1TI</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Timothy</shortName>
+        <fullName>The First Epistle of Paul the Apostle to Timothy</fullName>
+      </bookDecl>
+      <bookDecl id="2TI">
+        <bookAbbreviation>2TI</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Timothy</shortName>
+        <fullName>The Second Epistle of Paul the Apostle to Timothy</fullName>
+      </bookDecl>
+      <bookDecl id="TIT">
+        <bookAbbreviation>TIT</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Titus</shortName>
+        <fullName>The Epistle of Paul to Titus</fullName>
+      </bookDecl>
+      <bookDecl id="PHM">
+        <bookAbbreviation>PHM</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Philemon</shortName>
+        <fullName>The Epistle of Paul to Philemon</fullName>
+      </bookDecl>
+      <bookDecl id="HEB">
+        <bookAbbreviation>HB</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Hebrews</shortName>
+        <fullName>The Epistle to the Hebrews</fullName>
+      </bookDecl>
+      <bookDecl id="JAS">
+        <bookAbbreviation>JS</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>James</shortName>
+        <fullName>The General Epistle of James</fullName>
+      </bookDecl>
+      <bookDecl id="1PE">
+        <bookAbbreviation>1P</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 Peter</shortName>
+        <fullName>The First Epistle General of Peter</fullName>
+      </bookDecl>
+      <bookDecl id="2PE">
+        <bookAbbreviation>2P</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 Peter</shortName>
+        <fullName>The Second Epistle General of Peter</fullName>
+      </bookDecl>
+      <bookDecl id="1JN">
+        <bookAbbreviation>1J</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>1 John</shortName>
+        <fullName>The First Epistle General of John</fullName>
+      </bookDecl>
+      <bookDecl id="2JN">
+        <bookAbbreviation>2J</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>2 John</shortName>
+        <fullName>The Second Epistle of John</fullName>
+      </bookDecl>
+      <bookDecl id="3JN">
+        <bookAbbreviation>3J</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>3 John</shortName>
+        <fullName>The Third Epistle of John</fullName>
+      </bookDecl>
+      <bookDecl id="JUD">
+        <bookAbbreviation>JD</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Jude</shortName>
+        <fullName>The General Epistle of Jude</fullName>
+      </bookDecl>
+      <bookDecl id="REV">
+        <bookAbbreviation>RV</bookAbbreviation>
+        <chapterSpecifier>Chapter</chapterSpecifier>
+        <verseSpecifier>Verse</verseSpecifier>
+        <shortName>Revelation</shortName>
+        <fullName>The Revelation of St. John the Divine</fullName>
+      </bookDecl>
+    </bookStmt>
+  </scriptureHeader>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+    <book value="RUT">
+      <chapter value="1" />
+      <verse value="1" /> Now it came to pass in the days when the judges ruled, that there was a famine in the land. And a certain man of Bethlehem -judah went to sojourn in the country of Moab, he, and his wife, and his two sons. <verseEnd /><verse value="2" /> And the name of the man  was Elimelech, and the name of his wife Naomi, and the name of his two sons Mahlon and Chilion, Ephrathites of Bethlehem -judah. And they came into the country of Moab, and continued there. <verseEnd /><verse value="3" /> And Elimelech Naomi 's husband died; and she was left, and her two sons. <verseEnd /><verse value="4" /> And they took them wives of the women of Moab; the name of the one  was Orpah, and the name of the other Ruth: and they dwelled there about ten years. <verseEnd /><verse value="5" /> And Mahlon and Chilion died also both of them; and the woman was left of her two sons and her husband. <verseEnd /><verse value="6" /> Then she arose with her daughters -in-law, that she might return from the country of Moab: for she had heard in the country of Moab how that the LORD had visited his people in giving them bread. <verseEnd /><verse value="7" /> Wherefore she went forth out of the place where she was, and her two daughters -in-law with her; and they went on the way to return unto the land of Judah. <verseEnd /><verse value="8" /> And Naomi said unto her two daughters -in-law, Go, return each to her mother 's house: the LORD deal kindly with you, as ye have dealt with the dead, and with me. <verseEnd /><verse value="9" /> The LORD grant you that ye may find rest, each  of  you  in the house of her husband. Then she kissed them; and they lifted up their voice, and wept. <verseEnd /><verse value="10" /> And they said unto her, Surely we will return with thee unto thy people. <verseEnd /><verse value="11" /> And Naomi said, Turn again, my daughters: why will ye go with me?  are  there yet  any  more sons in my womb, that they may be your husbands? <verseEnd /><verse value="12" /> Turn again, my daughters, go  your  way ; for I am too old to have a husband. If I should say, I have hope,  if  I should have a husband also tonight, and should also bear sons; <verseEnd /><verse value="13" /> Would ye tarry for them till they were grown? would ye stay for them from having husbands? nay, my daughters; for it grieveth me much for your sakes that the hand of the LORD is gone out against me. <verseEnd /><verse value="14" /> And they lifted up their voice, and wept again: and Orpah kissed her mother -in-law; but Ruth cleaved unto her. <verseEnd /><verse value="15" /> And she said, Behold, thy sister -in-law is gone back unto her people, and unto her gods: return thou after thy sister -in-law. <verseEnd /><verse value="16" /> And Ruth said, Entreat me not to leave thee,  or  to return from following after thee: for whither thou goest, I will go; and where thou lodgest, I will lodge: thy people  shall  be  my people, and thy God my God: <verseEnd /><verse value="17" />Where thou diest, will I die, and there will I be buried: the LORD do so to me, and more also,  if  aught but death part thee and me. <verseEnd /><verse value="18" /> When she saw that she was steadfastly minded to go with her, then she left speaking unto her. <verseEnd /><verse value="19" /> So they two went until they came to Bethlehem. And it came to pass, when they were come to Bethlehem, that all the city was moved about them, and they said,  Is this Naomi? <verseEnd /><verse value="20" /> And she said unto them, Call me not Naomi, call me Mara: for the Almighty hath dealt very bitterly with me. <verseEnd /><verse value="21" />I went out full, and the LORD hath brought me home again empty: why  then call ye me Naomi, seeing the LORD hath testified against me, and the Almighty hath afflicted me? <verseEnd /><verse value="22" /> So Naomi returned, and Ruth the Moabitess, her daughter -in-law, with her, which returned out of the country of Moab: and they came to Bethlehem in the beginning of barley harvest. <verseEnd /><chapterEnd /><chapter value="2" /><verse value="1" /> And Naomi had a kinsman of her husband 's, a mighty man of wealth, of the family of Elimelech; and his name  was Boaz. <verseEnd /><verse value="2" /> And Ruth the Moabitess said unto Naomi, Let me now go to the field, and glean ears of corn after  him  in whose sight I shall find grace. And she said unto her, Go, my daughter. <verseEnd /><verse value="3" /> And she went, and came, and gleaned in the field after the reapers: and her hap was to light on a part of the field  belonging  unto Boaz, who  was  of the kindred of Elimelech. <verseEnd /><verse value="4" /> And, behold, Boaz came from Bethlehem, and said unto the reapers, The LORD  be with you. And they answered him, The LORD bless thee. <verseEnd /><verse value="5" /> Then said Boaz unto his servant that was set over the reapers, Whose damsel  is this? <verseEnd /><verse value="6" /> And the servant that was set over the reapers answered and said, It  is  the Moabitish damsel that came back with Naomi out of the country of Moab: <verseEnd /><verse value="7" /> And she said, I pray you, let me glean and gather after the reapers among the sheaves: so she came, and hath continued even from the morning until now, that she tarried a little in the house. <verseEnd /><verse value="8" /> Then said Boaz unto Ruth, Hearest thou not, my daughter? Go not to glean in another field, neither go from hence, but abide here fast by my maidens: <verseEnd /><verse value="9" /> Let  thine eyes  be  on the field that they do reap, and go thou after them: have I not charged the young men that they shall not touch thee? and when thou art athirst, go unto the vessels, and drink of  that which the young men have drawn. <verseEnd /><verse value="10" /> Then she fell on her face, and bowed herself to the ground, and said unto him, Why have I found grace in thine eyes, that thou shouldest take knowledge of me, seeing I  am  a stranger? <verseEnd /><verse value="11" /> And Boaz answered and said unto her, It hath fully been showed me, all that thou hast done unto thy mother -in-law since the death of thine husband: and  how  thou hast left thy father and thy mother, and the land of thy nativity, and art come unto a people which thou knewest not heretofore. <verseEnd /><verse value="12" /> The LORD recompense thy work, and a full reward be given thee of the LORD God of Israel, under whose wings thou art come to trust. <verseEnd /><verse value="13" /> Then she said, Let me find favor in thy sight, my lord; for that thou hast comforted me, and for that thou hast spoken friendly unto thine handmaid, though I be not like unto one of thine handmaidens. <verseEnd /><verse value="14" /> And Boaz said unto her, At mealtime come thou hither, and eat of the bread, and dip thy morsel in the vinegar. And she sat beside the reapers: and he reached her parched  corn , and she did eat, and was sufficed, and left. <verseEnd /><verse value="15" /> And when she was risen up to glean, Boaz commanded his young men, saying, Let her glean even among the sheaves, and reproach her not: <verseEnd /><verse value="16" /> And let fall also  some of the handfuls of purpose for her, and leave  them , that she may glean  them , and rebuke her not. <verseEnd /><verse value="17" /> So she gleaned in the field until even, and beat out that she had gleaned: and it was about an ephah of barley. <verseEnd /><verse value="18" /> And she took  it up, and went into the city: and her mother -in-law saw what she had gleaned: and she brought forth, and gave to her that she had reserved after she was sufficed. <verseEnd /><verse value="19" /> And her mother -in-law said unto her, Where hast thou gleaned today? and where wroughtest thou? blessed be he that did take knowledge of thee. And she showed her mother -in-law  with whom she had wrought, and said, The man 's name with whom I wrought today  is Boaz. <verseEnd /><verse value="20" /> And Naomi said unto her daughter -in-law, Blessed  be he of the LORD, who hath not left off his kindness to the living and to the dead. And Naomi said unto her, The man  is  near of kin unto us, one of our next kinsmen. <verseEnd /><verse value="21" /> And Ruth the Moabitess said, He said unto me also, Thou shalt keep fast by my young men, until they have ended all my harvest. <verseEnd /><verse value="22" /> And Naomi said unto Ruth her daughter -in-law,  It  is good, my daughter, that thou go out with his maidens, that they meet thee not in any other field. <verseEnd /><verse value="23" /> So she kept fast by the maidens of Boaz to glean unto the end of barley harvest and of wheat harvest; and dwelt with her mother -in-law. <verseEnd /><chapterEnd /><chapter value="3" /><verse value="1" /> Then Naomi her mother -in-law said unto her, My daughter, shall I not seek rest for thee, that it may be well with thee? <verseEnd /><verse value="2" /> And now  is not Boaz of our kindred, with whose maidens thou wast? Behold, he winnoweth barley tonight in the threshingfloor. <verseEnd /><verse value="3" />Wash thyself therefore, and anoint thee, and put thy raiment upon thee, and get thee down to the floor:  but  make not thyself known unto the man, until he shall have done eating and drinking. <verseEnd /><verse value="4" /> And it shall be, when he lieth down, that thou shalt mark the place where he shall lie, and thou shalt go in, and uncover his feet, and lay thee down; and he will tell thee what thou shalt do. <verseEnd /><verse value="5" /> And she said unto her, All that thou sayest unto me I will do. <verseEnd /><verse value="6" /> And she went down unto the floor, and did according to all that her mother -in-law bade her. <verseEnd /><verse value="7" /> And when Boaz had eaten and drunk, and his heart was merry, he went to lie down at the end of the heap of corn: and she came softly, and uncovered his feet, and laid her down. <verseEnd /><verse value="8" /> And it came to pass at midnight, that the man was afraid, and turned himself: and, behold, a woman lay at his feet. <verseEnd /><verse value="9" /> And he said, Who  art thou? And she answered, I  am Ruth thine handmaid: spread therefore thy skirt over thine handmaid; for thou  art  a near kinsman. <verseEnd /><verse value="10" /> And he said, Blessed  be thou of the LORD, my daughter:  for  thou hast showed more kindness in the latter end than at the beginning, inasmuch as thou followedst not young men, whether poor or rich. <verseEnd /><verse value="11" /> And now, my daughter, fear not; I will do to thee all that thou requirest: for all the city of my people doth know that thou  art  a virtuous woman. <verseEnd /><verse value="12" /> And now it is true that I  am  thy  near kinsman: howbeit there is a kinsman nearer than I. <verseEnd /><verse value="13" />Tarry this night, and it shall be in the morning,  that if he will perform unto thee the part of a kinsman, well; let him do the kinsman's part: but if he will not do the part of a kinsman to thee, then will I do the part of a kinsman to thee,  as  the LORD liveth: lie down until the morning. <verseEnd /><verse value="14" /> And she lay at his feet until the morning: and she rose up before one could know another. And he said, Let it not be known that a woman came into the floor. <verseEnd /><verse value="15" /> Also he said, Bring the veil that  thou  hast upon thee, and hold it. And when she held it, he measured six  measures  of barley, and laid  it on her: and she went into the city. <verseEnd /><verse value="16" /> And when she came to her mother -in-law, she said, Who  art thou, my daughter? And she told her all that the man had done to her. <verseEnd /><verse value="17" /> And she said, These six  measures  of barley gave he me; for he said to me, Go not empty unto thy mother -in-law. <verseEnd /><verse value="18" /> Then said she, Sit still, my daughter, until thou know how the matter will fall: for the man will not be in rest, until he have finished the thing this day. <verseEnd /><chapterEnd /><chapter value="4" /><verse value="1" /> Then went Boaz up to the gate, and sat him down there: and, behold, the kinsman of whom Boaz spoke came by; unto whom he said, Ho, such a one! turn aside, sit down here. And he turned aside, and sat down. <verseEnd /><verse value="2" /> And he took ten men of the elders of the city, and said, Sit ye down here. And they sat down. <verseEnd /><verse value="3" /> And he said unto the kinsman, Naomi, that is come again out of the country of Moab, selleth a parcel of land, which  was  our brother Elimelech 's: <verseEnd /><verse value="4" /> And I thought to advertise thee, saying, Buy  it before the inhabitants, and before the elders of my people. If thou wilt redeem  it , redeem  it : but if thou wilt not redeem  it,  then tell me, that I may know: for  there  is none to redeem  it beside thee; and I  am after thee. And he said, I will redeem  it . <verseEnd /><verse value="5" /> Then said Boaz, What day thou buyest the field of the hand of Naomi, thou must buy  it  also of Ruth the Moabitess, the wife of the dead, to raise up the name of the dead upon his inheritance. <verseEnd /><verse value="6" /> And the kinsman said, I cannot redeem  it  for myself, lest I mar mine own inheritance: redeem thou my right to thyself; for I cannot redeem  it . <verseEnd /><verse value="7" /> Now this  was  the  manner  in former time in Israel concerning redeeming and concerning changing, for to confirm all things; a man plucked off his shoe, and gave  it  to his neighbor: and this  was  a testimony in Israel. <verseEnd /><verse value="8" /> Therefore the kinsman said unto Boaz, Buy  it  for thee. So he drew off his shoe. <verseEnd /><verse value="9" /> And Boaz said unto the elders, and  unto all the people, Ye  are witnesses this day, that I have bought all that  was Elimelech 's, and all that  was Chilion 's and Mahlon 's, of the hand of Naomi. <verseEnd /><verse value="10" />Moreover Ruth the Moabitess, the wife of Mahlon, have I purchased to be my wife, to raise up the name of the dead upon his inheritance, that the name of the dead be not cut off from among his brethren, and from the gate of his place: ye  are witnesses this day. <verseEnd /><verse value="11" /> And all the people that  were  in the gate, and the elders, said,  We  are witnesses. The LORD make the woman that is come into thine house like Rachel and like Leah, which two did build the house of Israel: and do thou worthily in Ephratah, and be famous in Bethlehem: <verseEnd /><verse value="12" /> And let thy house be like the house of Pharez, whom Tamar bore unto Judah, of the seed which the LORD shall give thee of this young woman. <verseEnd /><verse value="13" /> So Boaz took Ruth, and she was his wife: and when he went in unto her, the LORD gave her conception, and she bore a son. <verseEnd /><verse value="14" /> And the women said unto Naomi, Blessed  be  the LORD, which hath not left thee this day without a kinsman, that his name may be famous in Israel. <verseEnd /><verse value="15" /> And he shall be unto thee a restorer of  thy life, and a nourisher of thine old age: for thy daughter -in-law, which loveth thee, which is better to thee than seven sons, hath born him. <verseEnd /><verse value="16" /> And Naomi took the child, and laid it in her bosom, and became nurse unto it. <verseEnd /><verse value="17" /> And the women her neighbors gave it a name, saying, There is a son born to Naomi; and they called his name Obed: he  is  the father of Jesse, the father of David. <verseEnd /><verse value="18" /> Now these  are  the generations of Pharez: Pharez begot Hezron, <verseEnd /><verse value="19" /> And Hezron begot Ram, and Ram begot Amminadab, <verseEnd /><verse value="20" /> And Amminadab begot Nahshon, and Nahshon begot Salmon, <verseEnd /><verse value="21" /> And Salmon begot Boaz, and Boaz begot Obed, <verseEnd /><verse value="22" /> And Obed begot Jesse, and Jesse begot David. <verseEnd /><chapterEnd /></book>
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="OT" value="OT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+  <canon id="NT" value="NT">
+    <book value="JUD">
+      <chapter value="1" />
+      <verse value="1" />Jude, the servant of Jesus Christ, and brother of James, to them that are sanctified by God the Father, and preserved in Jesus Christ,  and called. <verseEnd /><verse value="2" />Mercy unto you, and peace, and love, be multiplied. <verseEnd /><verse value="3" />Beloved, when I gave all diligence to write unto you of the common salvation, it was needful for me to write unto you, and exhort  you  that ye should earnestly contend for the faith which was once delivered unto the saints. <verseEnd /><verse value="4" />For there are certain men crept in unawares, who were before of old ordained to this condemnation, ungodly men, turning the grace of our God into lasciviousness, and denying the only Lord God, and our Lord Jesus Christ. <verseEnd /><verse value="5" />I will therefore put you in remembrance, though ye once knew this, how that the Lord, having saved the people out of the land of Egypt, afterward destroyed them that believed not. <verseEnd /><verse value="6" />And the angels which kept not their first estate, but left their own habitation, he hath reserved in everlasting chains under darkness unto the judgment of the great day. <verseEnd /><verse value="7" /> Even as Sodom and Gomorrah, and the cities about them in like manner, giving themselves over to fornication, and going after strange flesh, are set forth for an example, suffering the vengeance of eternal fire. <verseEnd /><verse value="8" />Likewise also these  filthy dreamers defile the flesh , despise dominion, and speak evil of dignities. <verseEnd /><verse value="9" />Yet Michael the archangel, when contending with the devil he disputed about the body of Moses, durst not bring against him a railing accusation, but said, The Lord rebuke thee. <verseEnd /><verse value="10" />But these speak evil of those things which they know not: but what they know naturally, as brute beasts, in those things they corrupt themselves. <verseEnd /><verse value="11" />Woe unto them! for they have gone in the way of Cain, and ran greedily after the error of Balaam for reward, and perished in the gainsaying of Korah. <verseEnd /><verse value="12" />These are spots in your feasts of charity, when they feast with you, feeding themselves without fear: clouds  they  are  without water, carried about of winds; trees whose fruit withereth, without fruit, twice dead, plucked up by the roots; <verseEnd /><verse value="13" />Raging waves of the sea, foaming out their own shame; wandering stars, to whom is reserved the blackness of darkness forever. <verseEnd /><verse value="14" />And Enoch also, the seventh from Adam, prophesied of these, saying, Behold, the Lord cometh with ten thousands of his saints, <verseEnd /><verse value="15" /> To execute judgment upon all, and to convince all that are ungodly among them of all their ungodly deeds which they have ungodly committed, and of all their hard  speeches which ungodly sinners have spoken against him. <verseEnd /><verse value="16" />These are murmurers, complainers, walking after their own lusts; and their mouth speaketh great swelling  words,  having men's persons in admiration because of advantage. <verseEnd /><verse value="17" />But, beloved, remember ye the words which were spoken before of the apostles of our Lord Jesus Christ; <verseEnd /><verse value="18" /> How that they told you there should be mockers in the last time, who should walk after their own ungodly lusts. <verseEnd /><verse value="19" />These be they who separate themselves, sensual, having not the Spirit. <verseEnd /><verse value="20" />But ye, beloved, building up yourselves on your most holy faith, praying in the Holy Ghost, <verseEnd /><verse value="21" />Keep yourselves in the love of God, looking for the mercy of our Lord Jesus Christ unto eternal life. <verseEnd /><verse value="22" />And of some have compassion, making a difference: <verseEnd /><verse value="23" />And others save with fear, pulling  them  out of the fire; hating even the garment spotted by the flesh. <verseEnd /><verse value="24" />Now unto him that is able to keep you from falling, and to present  you faultless before the presence of his glory with exceeding joy, <verseEnd /><verse value="25" /> To the only wise God our Savior,  be glory and majesty, dominion and power, both now and ever. Amen. <verseEnd /><chapterEnd /></book>
+  </canon>
+  <canon id="NT" value="NT">
+  </canon>
+</scripture>
