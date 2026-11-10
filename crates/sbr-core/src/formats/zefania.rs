@@ -23,8 +23,10 @@ pub fn export(b: &mut Bible, _meta: &ExportMeta, filename: &str) -> Result<()> {
     };
     renumber(&mut b.doc, |n| (n > 89).then_some(n + 811))?;
     let r = b.doc.root();
-    crate::io::write_utf8_bom(filename, &b.doc.outer_xml(r))?;
-    Ok(())
+    let written = crate::io::write_utf8_bom(filename, &b.doc.outer_xml(r));
+    // Restore the in-memory numbering so later exports start from it again.
+    renumber(&mut b.doc, |n| (n > 900).then_some(n - 811))?;
+    Ok(written?)
 }
 
 fn renumber(d: &mut sbr_xml::Document, f: impl Fn(i32) -> Option<i32>) -> Result<()> {
