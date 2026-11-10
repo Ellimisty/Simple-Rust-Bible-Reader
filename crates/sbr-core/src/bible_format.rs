@@ -230,6 +230,58 @@ pub fn detect(filename: &str) -> Result<i32> {
     Ok(id)
 }
 
+/// `BibleFormat.getFilters()`: (description, patterns) indexed by
+/// `filter index - 1`.
+pub const FILTERS: &[(&str, &[&str])] = &[
+    ("Zefania XML Bibles", &["*.xml"]),
+    ("The Unbound Bible (Unmapped-BCV)", &["*.txt"]),
+    ("The Unbound Bible (Unmapped-BCVS)", &["*.txt"]),
+    ("Open Scripture Information Standard (OSIS)", &["*.xml"]),
+    ("General Bible Format (GBF)", &["*.gbf"]),
+    ("XML Scripture Encoding Model (XSEM)", &["*.xml"]),
+    (
+        "The Word Bible ",
+        &["*.ont", "*.ot", "*.nt", "*.ontx", "*.otx", "*.ntx"],
+    ),
+    ("e-Sword Bible 8.x (BBL)", &["*.bbl"]),
+    ("e-Sword Bible 9.x and above (BBLX)", &["*.bblx"]),
+    ("e-Sword HD Bible (BBLI)", &["*.bbli"]),
+    ("The SWORD Project", &["*.zip"]),
+    ("Verse Per Line", &["*.vpl"]),
+    ("Bible Companion", &["*.bib"]),
+    ("Go Bible", &["*.jar"]),
+    (
+        "Theological Markup Language (ThML)",
+        &["*.xml", "*.thm", "*.thml"],
+    ),
+    ("Open Song Bibles", &["*.xmm", "*.xml"]),
+    ("OpenLP.org Bibles", &["*.sqlite"]),
+    (
+        "MySword for Android",
+        &["*.bbl.mybible.gz", "*.bbl.mybible"],
+    ),
+    ("Bible Analyzer Bibles", &["*.bib"]),
+    ("EasySlides Bibles", &["*.mdb"]),
+    ("MP3 Bibles", &["*.mp3"]),
+    ("LOGOS Import File", &["*.docx"]),
+    ("OnlineBible", &["*.exp"]),
+    ("Palm Bible+", &["*.pdb"]),
+    ("HeavenWorld Bibles for Windows 8", &["*.hbb"]),
+    ("VerseVIEW", &["*.xml", "*.db"]),
+    ("MyBible", &["*.SQLite3", "*.sqlite3"]),
+    ("Unified Scripture Format XML (USFX)", &["*.xml"]),
+    (
+        "SwordSearcher/Forge for SwordSearcher",
+        &[
+            "*.ss5bible",
+            "*.ss6bible",
+            "*.ss7bible",
+            "*.ss8bible",
+            "*.txt",
+        ],
+    ),
+];
+
 /// `BibleFactory(filename, filterIdx)` followed by `Load()`.
 pub fn load(filename: &str, filter_idx: i32) -> Result<Bible> {
     let detected = filter_idx == 0;

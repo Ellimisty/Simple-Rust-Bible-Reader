@@ -14,8 +14,11 @@ against the original executable.
 | crate | purpose |
 |---|---|
 | `sbr-xml` | `System.Xml.XmlDocument`-compatible DOM: parser, `OuterXml`/`Save` serialization, XPath 1.0 |
-
-More crates (`sbr-core`, `sbr-cli`, `sbr-gui`) are added as the port progresses.
+| `sbr-core` | shared model, versification, Bible/commentary/dictionary/book formats, chapter renderer and themes |
+| `sbr-rtf` | RtfPipe port (RTF to HTML/text) |
+| `sbr-sword` | SWORD module engine (replaces `libsword.dll`/`CSSword.dll`) |
+| `sbr-cli` | `sbr convert`: headless converter |
+| `sbr-gui` | `simple-bible-reader`: desktop reader on `wry`/`tao` |
 
 ## Building
 
@@ -23,6 +26,16 @@ More crates (`sbr-core`, `sbr-cli`, `sbr-gui`) are added as the port progresses.
 cargo build --release
 cargo test
 ```
+
+Run the reader (optionally with a Bible file to open):
+
+```sh
+cargo run --release -p sbr-gui -- path/to/bible.xml
+```
+
+On Linux the GUI needs the WebKitGTK 4.1 and GTK 3 development packages
+(`libwebkit2gtk-4.1-dev libgtk-3-dev libxdo-dev` on Debian/Ubuntu). Windows uses
+WebView2 and macOS uses WKWebView.
 
 ## License
 

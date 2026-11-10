@@ -6,6 +6,7 @@ members = [
     "crates/sbr-sword",
     "crates/sbr-core",
     "crates/sbr-cli",
+    "crates/sbr-gui",
 ]
 
 [workspace.package]
