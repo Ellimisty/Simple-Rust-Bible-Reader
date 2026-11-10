@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Simple Bible Reader</title>
+<style>
+html,body{margin:0;height:100%;font-family:"Segoe UI",sans-serif;font-size:13px}
+body{display:flex;flex-direction:column}
+#toolbar{display:flex;gap:4px;align-items:center;padding:4px;border-bottom:1px solid #aaa;background:#f0f0f0}
+#toolbar button.on{background:#9cf}
+#main{flex:1;display:flex;min-height:0}
+#tree{width:220px;overflow:auto;border-right:1px solid #aaa;padding:4px}
+#tree details summary{cursor:default;font-weight:bold}
+#tree .book{padding-left:12px;cursor:default}
+#tree .book:hover,#tree .book.sel{background:#9cf}
+#tree .chapters{padding-left:20px;display:none}
+#tree .chapters.open{display:block}
+#tree .chapters span{display:inline-block;min-width:24px;cursor:default;text-align:center}
+#tree .chapters span:hover,#tree .chapters span.sel{background:#9cf}
+#view{flex:1;border:0}
+#status{padding:2px 6px;border-top:1px solid #aaa;background:#f0f0f0}
+body.dark,body.dark #toolbar,body.dark #status{background:#2b2b2b;color:#ddd}
+body.dark #tree{background:#1e1e1e;color:#ddd}
+</style></head><body>
+<div id="toolbar">
+<button id="open" title="Open Bible">Open</button>
+<button id="export" title="Export Bible">Export</button>
+<button id="prev" title="Previous chapter">&#9664;</button>
+<button id="next" title="Next chapter">&#9654;</button>
+<button id="para" title="Paragraph mode">Para</button>
+<button id="raw" title="Display raw verse XML">Raw</button>
+<label>Theme <select id="theme"></select></label>
+<span id="title" style="margin-left:8px;font-weight:bold"></span>
+</div>
+<div id="main"><div id="tree"></div><iframe id="view" sandbox="allow-scripts"></iframe></div>
+<div id="status">Ready</div>
+<script>
+const send = o => window.ipc.postMessage(JSON.stringify(o));
+const $ = id => document.getElementById(id);
+let flat = [], cur = null;
+const sbr = window.sbr = {
+  init(o) {
+    $('theme').innerHTML = o.themes.map(t => `<option${t == o.theme ? ' selected' : ''}>${t}</option>`).join('');
+    document.body.classList.toggle('dark', o.theme == 'Dark');
+  },
+  status(t) { $('status').textContent = t; },
+  setBooks(title, groups) {
+    $('title').textContent = title; flat = [];
+    const tree = $('tree'); tree.innerHTML = '';
+    for (const [caption, books] of groups) {
+      const d = document.createElement('details'); d.open = true;
+      d.innerHTML = '<summary></summary>'; d.firstChild.textContent = caption;
+      for (const [name, chapters] of books) {
+        const b = document.createElement('div'); b.className = 'book'; b.textContent = name;
+        const c = document.createElement('div'); c.className = 'chapters';
+        for (const ch of chapters) {
+          const s = document.createElement('span'); s.textContent = ch;
+          s.onclick = () => send({cmd: 'chapter', book: name, chapter: ch});
+          s.dataset.key = name + '|' + ch; c.appendChild(s);
+          flat.push([name, ch]);
+        }
+        b.onclick = () => { c.classList.toggle('open'); if (chapters.length) send({cmd: 'chapter', book: name, chapter: chapters[0]}); };
+        d.appendChild(b); d.appendChild(c);
+      }
+      tree.appendChild(d);
+    }
+  },
+  showChapter(html, book, chapter) {
+    cur = [book, chapter];
+    $('view').srcdoc = html;
+    document.querySelectorAll('#tree .sel').forEach(e => e.classList.remove('sel'));
+    const s = document.querySelector(`#tree span[data-key="${CSS.escape(book + '|' + chapter)}"]`);
+    if (s) { s.classList.add('sel'); s.parentNode.classList.add('open'); s.parentNode.previousSibling.classList.add('sel'); s.scrollIntoView({block: 'nearest'}); }
+    sbr.status(book + ' ' + chapter);
+  },
+  selectVerse(v, para) {
+    $('view').contentWindow.postMessage({selectVerse: String(v), para: !!para}, '*');
+  },
+  setToggle(id, on) { $(id).classList.toggle('on', on); },
+};
+window.addEventListener('message', e => { if (e.source === $('view').contentWindow && e.data && typeof e.data.sbr == 'string') send({cmd: 'webmessage', message: e.data.sbr}); });
+const step = d => { if (!cur) return; const i = flat.findIndex(x => x[0] == cur[0] && x[1] == cur[1]) + d; if (i >= 0 && i < flat.length) send({cmd: 'chapter', book: flat[i][0], chapter: flat[i][1]}); };
+$('open').onclick = () => send({cmd: 'open'});
+$('export').onclick = () => send({cmd: 'export'});
+$('prev').onclick = () => step(-1);
+$('next').onclick = () => step(1);
+$('para').onclick = () => send({cmd: 'para'});
+$('raw').onclick = () => send({cmd: 'raw'});
+$('theme').onchange = e => send({cmd: 'theme', name: e.target.value});
+send({cmd: 'ready'});
+</script></body></html>

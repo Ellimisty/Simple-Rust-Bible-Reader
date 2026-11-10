@@ -1,0 +1,18 @@
+[package]
+name = "sbr-gui"
+description = "Simple Rust Bible Reader desktop application (wry/tao)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "simple-bible-reader"
+path = "src/main.rs"
+
+[dependencies]
+sbr-core.workspace = true
+wry = "0.57"
+tao = "0.37"
+rfd = { version = "0.15", default-features = false, features = ["gtk3"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

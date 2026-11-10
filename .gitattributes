@@ -1,0 +1,2 @@
+crates/sbr-core/tests/fixtures/** -text
+crates/sbr-core/resources/** -text
