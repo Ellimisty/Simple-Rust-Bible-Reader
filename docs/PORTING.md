@@ -57,6 +57,14 @@ Zefania export.
 - VPL, Crosswire style `Book.Chapter.Verse text`: the original appended the
   dot-separated fields after the verse number to the verse text a second
   time; the port keeps only the text after the first space.
+- OSIS export: the original throws (and writes nothing) when a verse has a
+  non-red `STYLE` span, because every `</STYLE>` becomes `</q>` while only the
+  red opening tag is replaced. The port keeps such verses' markup unchanged.
+- Verse-per-record loaders (VPL, Unbound, MySword, OSIS): a book change that
+  keeps the previous chapter number now starts a new `CHAPTER`; the original
+  appended those verses to the previous book.
+- Zefania export renumbers apocrypha (90+ to 901+) in place; the port restores
+  the in-memory numbers afterwards so a second export is not renumbered again.
 
 ## Running the CLI
 
