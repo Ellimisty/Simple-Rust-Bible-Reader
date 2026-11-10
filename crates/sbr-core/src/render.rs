@@ -335,6 +335,18 @@ pub fn chapter_html(
     Ok(html)
 }
 
+/// Quotes `s` as an XPath string literal (XPath 1.0 has no escapes).
+fn xpath_literal(s: &str) -> String {
+    if !s.contains('\'') {
+        format!("'{s}'")
+    } else if !s.contains('"') {
+        format!("\"{s}\"")
+    } else {
+        let parts: Vec<String> = s.split('\'').map(|p| format!("'{p}'")).collect();
+        format!("concat({})", parts.join(", \"'\", "))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -352,17 +364,5 @@ mod tests {
         assert!(html.contains("<h3>"), "{html}");
         assert!(html.contains("<li><a class=\"linear\" id='1' OnClick=\"chrome.webview.postMessage('8-1-1');return false;\""), "{html}");
         assert!(html.contains("In the days<sup><span onclick=\"chrome.webview.postMessage('LH3117');\" class='lexicon'>H3117</span></sup><span style=\"color:#ff0000\">x</span></a> </a><BLOCKQUOTE>n</BLOCKQUOTE></li></ul></body></html>"), "{html}");
-    }
-}
-
-/// Quotes `s` as an XPath string literal (XPath 1.0 has no escapes).
-fn xpath_literal(s: &str) -> String {
-    if !s.contains('\'') {
-        format!("'{s}'")
-    } else if !s.contains('"') {
-        format!("\"{s}\"")
-    } else {
-        let parts: Vec<String> = s.split('\'').map(|p| format!("'{p}'")).collect();
-        format!("concat({})", parts.join(", \"'\", "))
     }
 }
