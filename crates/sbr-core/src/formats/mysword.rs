@@ -283,7 +283,7 @@ pub fn export_with(b: &mut Bible, meta: &ExportMeta, p: &Properties, filename: &
         meta.abbreviation,
         meta.comments,
         p.version,
-        p.font,
+        p.font.replace('\'', "''"),
         p.ot,
         p.nt,
         p.apocrypha,
