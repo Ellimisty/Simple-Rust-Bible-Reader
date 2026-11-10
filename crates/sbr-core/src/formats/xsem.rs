@@ -55,6 +55,11 @@ pub fn load(b: &mut Bible, filename: &str) -> Result<()> {
     text = format!("<XMLBIBLE>{text}</XMLBIBLE>");
     for (i, name) in BOOK_NAMES.iter().enumerate() {
         text = text.replace(&format!("\"{name}\""), &format!("\"{}\"", i + 1));
+        // The original only handled double-quoted book values.
+        text = text.replace(
+            &format!("bnumber='{name}'"),
+            &format!("bnumber='{}'", i + 1),
+        );
     }
     let mut d = Document::new();
     if d.load_xml(&text).is_err() {
