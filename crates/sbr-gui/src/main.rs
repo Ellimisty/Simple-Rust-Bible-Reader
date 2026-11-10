@@ -158,10 +158,11 @@ impl App {
         let path = path.to_string_lossy().into_owned();
         // rfd does not report the chosen filter, so pick the format from the
         // extension (first filter that lists it), as `detect` would.
-        let ext = path.rsplit('.').next().unwrap_or("").to_lowercase();
+        let lower = path.to_lowercase();
+        let ext = lower.rsplit('.').next().unwrap_or("").to_string();
         let Some(idx) = FILTERS.iter().position(|(_, p)| {
             p.iter()
-                .any(|e| e.trim_start_matches("*.").eq_ignore_ascii_case(&ext))
+                .any(|e| lower.ends_with(&e.trim_start_matches('*').to_lowercase()))
         }) else {
             return self.status(wv, &format!("Unknown export format: .{ext}"));
         };
