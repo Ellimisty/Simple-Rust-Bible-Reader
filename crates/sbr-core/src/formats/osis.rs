@@ -113,7 +113,7 @@ fn process_line(d: &mut Document, st: &mut State, src: &Document, verse: NodeId)
         d.append_child(st.root, e);
         st.book = Some(e);
     }
-    if cn != st.p_chap || restart {
+    if cn != st.p_chap || bn != st.p_book || restart {
         let e = d.create_element("CHAPTER");
         d.set_attribute(e, "cnumber", &cn.to_string());
         if let Some(bk) = st.book {

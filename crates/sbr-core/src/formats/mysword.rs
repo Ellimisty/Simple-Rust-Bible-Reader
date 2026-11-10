@@ -141,7 +141,7 @@ fn process_line(d: &mut Document, st: &mut State, bn: i32, cn: i32, vn: i32, tex
             st.book = Some(e);
         }
     }
-    if cn != st.p_chap || restart {
+    if cn != st.p_chap || bn != st.p_book || restart {
         let bk = st.book.expect("book");
         st.chap = d
             .select_single_node(bk, &format!("CHAPTER[@cnumber='{cn}']"))
