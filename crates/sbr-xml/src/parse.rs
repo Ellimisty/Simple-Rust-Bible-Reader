@@ -474,6 +474,15 @@ fn parse_entities(subset: &str, doc: &mut Document) {
                     if p.reference(doc, &mut v).is_err() {
                         break;
                     }
+                } else if let Some(inner) = c
+                    .eq(&'&')
+                    .then(|| raw[p.pos + 1..].split_once(';'))
+                    .flatten()
+                    .and_then(|(n, _)| doc.entities.get(n).map(|v| (n.len(), v.clone())))
+                {
+                    // References to entities declared earlier are expanded.
+                    v.push_str(&inner.1);
+                    p.bump(inner.0 + 2);
                 } else {
                     v.push(c);
                     p.bump(c.len_utf8());
