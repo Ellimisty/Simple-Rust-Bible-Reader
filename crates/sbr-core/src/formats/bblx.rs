@@ -1,51 +1,64 @@
 //! Port of `BBLXBibleFormat.cs` (`.bblx`). e-Sword 9+ bible module:
 //! SQLite db with `Bible(Book, Chapter, Verse, Scripture)` and a
-//! `Details` metadata table. Verse text carries GBF-style inline
-//! tags, converted to Zefania like the other e-Sword-family ports.
+//! `Details` metadata table. Scripture may be TEXT or a BLOB —
+//! zlib-compressed, or TwoFish-encrypted (unimplemented: such modules
+//! read as empty verses). Book ids pass through
+//! eSword2Zefania_Apocrypha_Map; all books are kept.
+//! Verse text is stored verbatim (InnerText after postProcessContent);
+//! markup like <W430> is NOT expanded to <gr> on load.
 
 use crate::bible_format::{Bible, ExportMeta, Result};
 use crate::dotnet::int_parse;
 use crate::format_util as fu;
 use crate::global_memory;
-use fancy_regex::Regex;
 use rusqlite::types::ValueRef;
 use sbr_xml::{Document, NodeId};
+use std::collections::HashMap;
+use std::io::Read;
 use std::sync::OnceLock;
 
-/// Export settings from `getProperties()` with their original defaults.
-pub struct Properties {
-    pub version: String,
-    pub font: String,
-    pub ot: String,
-    pub nt: String,
-    pub apocrypha: String,
-    pub strong: String,
+/// e-Sword book number -> Zefania bnumber (apocrypha).
+fn esword_to_zefania(b: i32) -> i32 {
+    static M: OnceLock<HashMap<i32, i32>> = OnceLock::new();
+    let m = M.get_or_init(|| {
+        HashMap::from([(67, 69), (68, 67), (69, 68), (74, 80), (75, 81),
+                       (78, 76), (76, 77), (77, 78)])
+    });
+    *m.get(&b).unwrap_or(&b)
 }
 
-impl Default for Properties {
-    fn default() -> Self {
-        Self {
-            version: "1".into(),
-            font: "DEFAULT".into(),
-            ot: "1".into(),
-            nt: "1".into(),
-            apocrypha: "0".into(),
-            strong: "0".into(),
-        }
-    }
+/// Zefania bnumber -> e-Sword book number (apocrypha).
+fn zefania_to_esword(b: i32) -> i32 {
+    static M: OnceLock<HashMap<i32, i32>> = OnceLock::new();
+    let m = M.get_or_init(|| {
+        HashMap::from([(69, 67), (67, 68), (68, 69), (80, 74), (81, 75),
+                       (76, 78), (77, 76), (78, 77)])
+    });
+    *m.get(&b).unwrap_or(&b)
 }
 
-fn re(cell: &'static OnceLock<Regex>, pat: &str) -> &'static Regex {
-    cell.get_or_init(|| Regex::new(pat).unwrap())
-}
-
-/// `DataRow[i].ToString()` for the SQLite value kinds.
-fn cell_string(v: ValueRef) -> String {
+/// Scripture cell -> text: plain string, zlib'd blob, or (unsupported)
+/// TwoFish-encrypted blob -> empty string.
+fn cell_text(v: ValueRef) -> String {
     match v {
         ValueRef::Null => String::new(),
         ValueRef::Integer(i) => i.to_string(),
         ValueRef::Real(f) => f.to_string(),
-        ValueRef::Text(t) | ValueRef::Blob(t) => String::from_utf8_lossy(t).into_owned(),
+        ValueRef::Text(t) => String::from_utf8_lossy(t).into_owned(),
+        ValueRef::Blob(b) => {
+            let zi = fu::find_zlib_header_idx(b, 0xB);
+            match zi {
+                Some(i) => {
+                    let mut out = String::new();
+                    flate2::read::ZlibDecoder::new(&b[i..])
+                        .read_to_string(&mut out)
+                        .map(|_| out)
+                        .unwrap_or_default()
+                }
+                // TwoFish-encrypted modules are not supported yet.
+                None => String::new(),
+            }
+        }
     }
 }
 
@@ -69,7 +82,21 @@ pub fn load(b: &mut Bible, filename: &str) -> Result<()> {
         let mut rows = st.query([])?;
         let mut out = Vec::new();
         while let Some(row) = rows.next()? {
-            out.push([0, 1, 2, 3].map(|i| row.get_ref(i).map(cell_string).unwrap_or_default()));
+            out.push([
+                row.get_ref(0).map(|v| match v {
+                    ValueRef::Integer(i) => i.to_string(),
+                    x => cell_text(x),
+                }).unwrap_or_default(),
+                row.get_ref(1).map(|v| match v {
+                    ValueRef::Integer(i) => i.to_string(),
+                    x => cell_text(x),
+                }).unwrap_or_default(),
+                row.get_ref(2).map(|v| match v {
+                    ValueRef::Integer(i) => i.to_string(),
+                    x => cell_text(x),
+                }).unwrap_or_default(),
+                row.get_ref(3).map(cell_text).unwrap_or_default(),
+            ]);
         }
         Ok(out)
     })()
@@ -84,14 +111,12 @@ pub fn load(b: &mut Bible, filename: &str) -> Result<()> {
         p_verse: -1,
     };
     for [bk, ch, vs, text] in rows {
-        let Some(bno) = int_parse(&bk) else { break };
-        if bno > 66 {
-            break;
-        }
-        let (Some(c), Some(v)) = (int_parse(&ch), int_parse(&vs)) else {
+        let (Some(bno), Some(c), Some(v)) =
+            (int_parse(&bk), int_parse(&ch), int_parse(&vs))
+        else {
             break;
         };
-        process_line(&mut d, &mut st, bno, c, v, &text);
+        process_line(&mut d, &mut st, esword_to_zefania(bno), c, v, &text);
     }
     b.doc = d;
     Ok(())
@@ -136,10 +161,16 @@ fn process_line(d: &mut Document, st: &mut State, bn: i32, cn: i32, vn: i32, tex
     }
     if vn != st.p_verse || cn != st.p_chap || bn != st.p_book {
         let e = d.create_element("VERS");
-        if global_memory::get().parse_bible {
-            if set_verse(d, e, text).is_err() {
-                d.set_inner_text(e, text);
-            }
+        let g = global_memory::get();
+        if g.parse_bible {
+            // original: ConvertRtfToHtmlBible side-flag, then
+            // postProcessContent + InnerText (text kept verbatim)
+            let t = if !g.parse_bible_bkgnd_cleaner {
+                crate::post_process::post_process_content(text)
+            } else {
+                text.to_string()
+            };
+            d.set_inner_text(e, &t);
         } else {
             let _ = d.set_inner_xml(e, &fu::escape_xml(text));
         }
@@ -153,90 +184,34 @@ fn process_line(d: &mut Document, st: &mut State, bn: i32, cn: i32, vn: i32, tex
     st.p_verse = vn;
 }
 
-/// The private `processLine(XmlElement, string)`: GBF-style tags to Zefania.
-fn set_verse(
-    d: &mut Document,
-    e: NodeId,
-    line: &str,
-) -> std::result::Result<(), sbr_xml::ParseError> {
-    static RF: OnceLock<Regex> = OnceLock::new();
-    static PAIR: OnceLock<Regex> = OnceLock::new();
-    static TAG2: OnceLock<Regex> = OnceLock::new();
-    static W1: OnceLock<Regex> = OnceLock::new();
-    static W2: OnceLock<Regex> = OnceLock::new();
-    static ANY: OnceLock<Regex> = OnceLock::new();
-    let mut line = line.to_string();
-    let g = global_memory::get().clone();
-    if g.parse_bible {
-        if line.contains("<RF") {
-            line = re(&RF, r"\<RF\>[^<]+\<Rf\>")
-                .replace_all(&line, "")
-                .into_owned();
-        }
-        if line.contains("<FR>") {
-            line = line
-                .replace("<FR>", "<STYLE css=\"color:#ff0000\">")
-                .replace("<Fr>", "</STYLE>");
-        }
-        line = re(&PAIR, "<[A-Z][A-Z]>([^<]*)<[A-Z][a-z]>")
-            .replace_all(&line, "${1}")
-            .into_owned();
-        line = re(&TAG2, "<[A-Z]([A-Z]|[a-z])>")
-            .replace_all(&line, "")
-            .into_owned();
-        if line.contains("<W") {
-            line = re(&W1, "(?i)( [^<]*)(<W[H|G])([0-9.xs*]*)(>)")
-                .replace_all(&line, "<gr str=\"${3}\">${1}</gr>")
-                .into_owned();
-            line = re(&W2, "(?i)(<W[H|G])([0-9.xs*]*)(>)")
-                .replace_all(&line, "<gr str=\"${2}\">&nbsp;</gr>")
-                .into_owned();
-        }
-        if line.contains("<X") || line.contains("<x") {
-            line = line.replace("<X>", "").replace("<x>", "");
-        }
-        line = re(&ANY, r"<[A-Za-z0-9\.]+>")
-            .replace_all(&line, "")
-            .into_owned();
-        if !g.parse_bible_bkgnd_cleaner {
-            line = crate::post_process::post_process_content(&line);
-        }
-        d.set_inner_xml(e, &line)
-    } else {
-        d.set_inner_text(e, &fu::escape_xml(&line));
-        Ok(())
-    }
-}
-
+/// Original `processExportVerse`: markup -> RTF control words.
 fn process_export_verse(d: &Document, n: NodeId, b: i32) -> String {
-    static GR: OnceLock<Regex> = OnceLock::new();
     if !global_memory::get().parse_bible {
         return d.inner_text(n);
     }
     let mut t = d.inner_xml(n);
     if t.contains("<STYLE") {
         t = t
-            .replace("<STYLE css=\"color:#ff0000\">", "<FR>")
-            .replace("</STYLE>", "<Fr>");
+            .replace("<STYLE css=\"color:#ff0000\">", "{\\cf6 ")
+            .replace("</STYLE>", "}");
+    }
+    if t.contains("<i>") {
+        t = t.replace("<i>", "{\\cf15\\i ").replace("</i>", "}");
     }
     if t.contains("<gr") {
+        static GR: OnceLock<fancy_regex::Regex> = OnceLock::new();
         let prefix = if b < 40 { "H" } else { "G" };
-        let gr = re(
-            &GR,
+        let gr = GR.get_or_init(|| fancy_regex::Regex::new(
             r#"(<gr )([^s]*)(str=['"]*)([^<'"]*)['"]*(>)(((?!</gr).)*)</gr>"#,
-        );
+        ).unwrap());
         t = gr
-            .replace_all(&t, format!("${{6}}<W{prefix}${{4}}>").as_str())
+            .replace_all(&t, format!("${{6}}{{\\cf11\\super {prefix}${{4}}}}"))
             .into_owned();
     }
     t
 }
 
 pub fn export(b: &mut Bible, meta: &ExportMeta, filename: &str, _filter_idx: i32) -> Result<()> {
-    export_with(b, meta, &Properties::default(), filename)
-}
-
-pub fn export_with(b: &mut Bible, meta: &ExportMeta, p: &Properties, filename: &str) -> Result<()> {
     if std::path::Path::new(filename).exists() {
         std::fs::remove_file(filename)?;
     }
@@ -250,16 +225,8 @@ pub fn export_with(b: &mut Bible, meta: &ExportMeta, p: &Properties, filename: &
     .map_err(sql)?;
     let dir = global_memory::get().direction;
     cnn.execute_batch(&format!(
-        "INSERT INTO Details VALUES('{}','{}','{}',{},'{}',{dir},{},{},{},{})",
-        meta.description,
-        meta.abbreviation,
-        meta.comments,
-        p.version,
-        p.font.replace('\'', "''"),
-        p.ot,
-        p.nt,
-        p.apocrypha,
-        p.strong
+        "INSERT INTO Details VALUES('{}','{}','{}',1,'DEFAULT',{dir},1,1,0,0)",
+        meta.description, meta.abbreviation, meta.comments
     ))
     .map_err(sql)?;
     let tx = cnn.transaction().map_err(sql)?;
@@ -267,13 +234,17 @@ pub fn export_with(b: &mut Bible, meta: &ExportMeta, p: &Properties, filename: &
         let mut ins = tx
             .prepare("INSERT INTO Bible (Book, Chapter, Verse, Scripture) VALUES (?1, ?2, ?3, ?4)")
             .map_err(sql)?;
-        for bk in 1..=66 {
-            for c in 1..=fu::get_chapter_count(bk) {
-                for v in 1..=fu::get_verse_count(bk, c) {
-                    if let Some(n) = b.verse_node(bk, c, v) {
-                        let t = fu::unescape_xml(&process_export_verse(&b.doc, n, bk));
+        // original iterates the book nodes present in the doc
+        let sel = dsel_books(&b.doc);
+        for b_ in sel {
+            let book_no = zefania_to_esword(b_);
+            for c in 1..=fu::get_chapter_count(b_) {
+                for v in 1..=fu::get_verse_count(b_, c) {
+                    if let Some(n) = b.verse_node(b_, c, v) {
+                        let t = fu::get_rtf_unicode_escaped_string(
+                            &process_export_verse(&b.doc, n, b_));
                         ins.execute(rusqlite::params![
-                            bk.to_string(),
+                            book_no.to_string(),
                             c.to_string(),
                             v.to_string(),
                             t
@@ -286,4 +257,13 @@ pub fn export_with(b: &mut Bible, meta: &ExportMeta, p: &Properties, filename: &
     }
     tx.commit().map_err(sql)?;
     Ok(())
+}
+
+/// bnumber of each /XMLBIBLE/BIBLEBOOK node, in document order.
+fn dsel_books(d: &Document) -> Vec<i32> {
+    d.select_nodes(d.root(), "/XMLBIBLE/BIBLEBOOK")
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|n| int_parse(&d.get_attribute(n, "bnumber")))
+        .collect()
 }
