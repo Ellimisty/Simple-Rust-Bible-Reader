@@ -153,7 +153,7 @@ fn text_el(d: &mut Document, parent: NodeId, name: &str, text: Option<&str>) -> 
 
 /// Verses of the Zefania document keyed by their attribute strings; the
 /// first match wins, like the original's `SelectSingleNode`.
-fn verse_index(doc: &Document) -> HashMap<(String, String, String), NodeId> {
+pub(crate) fn verse_index(doc: &Document) -> HashMap<(String, String, String), NodeId> {
     let mut m = HashMap::new();
     let Some(top) = doc.document_element() else {
         return m;

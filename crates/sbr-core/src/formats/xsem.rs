@@ -4,8 +4,7 @@ use crate::bible_format::{Bible, ExportMeta, Result};
 use crate::format_util as fu;
 use crate::global_memory;
 use fancy_regex::Regex;
-use sbr_xml::{Document, NodeId};
-use std::collections::HashMap;
+use sbr_xml::Document;
 use std::sync::OnceLock;
 
 const BOOK_NAMES: [&str; 66] = [
@@ -68,36 +67,6 @@ pub fn load(b: &mut Bible, filename: &str) -> Result<()> {
     Ok(())
 }
 
-fn verse_index(doc: &Document) -> HashMap<(String, String, String), NodeId> {
-    let mut m = HashMap::new();
-    let Some(top) = doc
-        .document_element()
-        .filter(|&t| doc.name(t) == "XMLBIBLE")
-    else {
-        return m;
-    };
-    let kids =
-        |n: NodeId, name: &'static str| doc.child_elements(n).filter(move |&c| doc.name(c) == name);
-    for bk in kids(top, "BIBLEBOOK") {
-        let Some(bn) = doc.attr(bk, "bnumber") else {
-            continue;
-        };
-        for ch in kids(bk, "CHAPTER") {
-            let Some(cn) = doc.attr(ch, "cnumber") else {
-                continue;
-            };
-            for v in kids(ch, "VERS") {
-                let Some(vn) = doc.attr(v, "vnumber") else {
-                    continue;
-                };
-                m.entry((bn.to_string(), cn.to_string(), vn.to_string()))
-                    .or_insert(v);
-            }
-        }
-    }
-    m
-}
-
 pub fn export(b: &mut Bible, _meta: &ExportMeta, filename: &str, _filter_idx: i32) -> Result<()> {
     let filename = if filename.ends_with(".xml") {
         filename.to_string()
@@ -114,7 +83,7 @@ pub fn export(b: &mut Bible, _meta: &ExportMeta, filename: &str, _filter_idx: i3
     o.set_inner_xml(hdr, SCRIPTURE_HEADER.trim_start_matches('\u{feff}'))?;
     o.append_child(root, hdr);
 
-    let index = verse_index(&b.doc);
+    let index = super::osis::verse_index(&b.doc);
     for book_id in 1..=66 {
         // Like the original, every book opens a new canon element.
         let id = if book_id < 40 { "OT" } else { "NT" };

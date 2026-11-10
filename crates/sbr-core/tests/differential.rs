@@ -165,3 +165,21 @@ fn xsem_matches_original() {
         assert!(got == std::fs::read(fixture("expected/out_6_1.xml")).unwrap());
     }
 }
+
+#[test]
+fn thml_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let src = fixture("kjvplus_ruth_jude.xml");
+    let got = convert(&src, 1, 15, "out_15.xml");
+    assert!(got == std::fs::read(fixture("expected/out_15.xml")).unwrap());
+    // The port keeps each chapter's last verse, which the original dropped.
+    let last = fancy_regex::Regex::new(r#"<VERS vnumber="\d+">[^<]*</VERS></CHAPTER>"#).unwrap();
+    let thml = fixture("expected/out_15.xml");
+    let want = std::fs::read(fixture("expected/out_15_1.xml")).unwrap();
+    for from in [15, 0] {
+        let got = convert(&thml, from, 1, "out_15_1.xml");
+        let got = String::from_utf8(got).unwrap();
+        assert_eq!(got.matches("<VERS ").count(), 85 + 25);
+        assert!(last.replace_all(&got, "</CHAPTER>").as_bytes() == want.as_slice());
+    }
+}

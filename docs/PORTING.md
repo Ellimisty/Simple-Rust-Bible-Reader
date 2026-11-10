@@ -63,6 +63,9 @@ Zefania export.
 - Verse-per-record loaders (VPL, Unbound, MySword, OSIS): a book change that
   keeps the previous chapter number now starts a new `CHAPTER`; the original
   appended those verses to the previous book.
+- ThML import: the original dropped the last verse of every chapter and, with
+  Bible parsing off, wrote the previous verse's text; the port keeps every
+  verse with its own text.
 - Zefania export renumbers apocrypha (90+ to 901+) in place; the port restores
   the in-memory numbers afterwards so a second export is not renumbered again.
 
