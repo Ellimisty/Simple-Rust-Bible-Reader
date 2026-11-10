@@ -15,7 +15,9 @@ fn fixture(name: &str) -> String {
 /// Exports under the reference file's name: formats without stored metadata
 /// derive the description/abbreviation from the output file name.
 fn convert(input: &str, from: i32, to: i32, name: &str) -> Vec<u8> {
-    let dir = std::env::temp_dir().join(format!("sbr_test_{}_{from}_{to}", std::process::id()));
+    static SEQ: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+    let seq = SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let dir = std::env::temp_dir().join(format!("sbr_test_{}_{seq}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     let out = dir.join(name).to_string_lossy().into_owned();
     let mut b = bible_format::load(input, from).unwrap();
