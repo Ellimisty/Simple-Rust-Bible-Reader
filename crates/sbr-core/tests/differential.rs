@@ -209,3 +209,26 @@ fn opensong_matches_original() {
     }
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn verseview_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let dir = std::env::temp_dir().join(format!("sbr_test_vv_{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    // `fname` records the name given to the exporter, before `.xml` is added.
+    let out = dir.join("out_26");
+    let mut b = bible_format::load(&fixture("kjvplus_ruth_jude.xml"), 1).unwrap();
+    bible_format::export(&mut b, out.to_str().unwrap(), 26).unwrap();
+    let written = dir.join("out_26.xml");
+    assert!(std::fs::read(&written).unwrap() == gunzip(&fixture("expected/out_26.xml.gz")));
+    // The original imports every verse empty; the port keeps the text.
+    let want = gunzip(&fixture("expected/out_26_1.xml.gz"));
+    let text = fancy_regex::Regex::new(r#"(<VERS vnumber="\d+">)[^<]*</VERS>"#).unwrap();
+    for from in [26, 0] {
+        let got =
+            String::from_utf8(convert(written.to_str().unwrap(), from, 1, "r_1.xml")).unwrap();
+        assert!(got.contains("<VERS vnumber=\"1\"> Now it came to pass in the days"));
+        assert!(text.replace_all(&got, "${1}</VERS>").as_bytes() == want.as_slice());
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}

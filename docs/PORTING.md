@@ -66,6 +66,9 @@ Zefania export.
 - ThML import: the original dropped the last verse of every chapter and, with
   Bible parsing off, wrote the previous verse's text; the port keeps every
   verse with its own text.
+- VerseVIEW import: the original only read verse text while cleaning, so with
+  cleaning or parsing off every verse got the previous (empty) text; the port
+  always reads the verse.
 - Zefania export renumbers apocrypha (90+ to 901+) in place; the port restores
   the in-memory numbers afterwards so a second export is not renumbered again.
 
