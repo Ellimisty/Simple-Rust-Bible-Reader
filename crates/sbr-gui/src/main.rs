@@ -13,7 +13,12 @@ const UI_HTML: &str = include_str!("ui.html");
 
 /// Lets the chapter iframe use the WebView2 `chrome.webview.postMessage`
 /// calls emitted by `getChapterHtml`.
-const CHAPTER_SHIM: &str = "<script>window.chrome={webview:{postMessage:function(m){parent.postMessage({sbr:String(m)},'*')}}};</script>";
+const CHAPTER_SHIM: &str = concat!(
+    "<script>window.chrome={webview:{postMessage:function(m){parent.postMessage({sbr:String(m)},'*')}}};",
+    "addEventListener('message',function(e){var m=e.data;if(e.source!==parent||!m||typeof m.selectVerse!='string')return;",
+    "for(var a of document.getElementsByTagName('a'))a.className=m.para?'para':'linear';",
+    "var v=document.getElementById(m.selectVerse);if(v)v.className='selectedverse';});</script>"
+);
 
 #[derive(Deserialize)]
 #[serde(tag = "cmd", rename_all = "lowercase")]

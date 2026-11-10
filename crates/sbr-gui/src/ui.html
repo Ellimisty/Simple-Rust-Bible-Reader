@@ -71,9 +71,7 @@ const sbr = window.sbr = {
     sbr.status(book + ' ' + chapter);
   },
   selectVerse(v, para) {
-    const d = $('view').contentDocument; if (!d) return;
-    for (const a of d.getElementsByTagName('a')) a.className = para ? 'para' : 'linear';
-    const e = d.getElementById(v); if (e) e.className = 'selectedverse';
+    $('view').contentWindow.postMessage({selectVerse: String(v), para: !!para}, '*');
   },
   setToggle(id, on) { $(id).classList.toggle('on', on); },
 };
