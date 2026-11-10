@@ -196,7 +196,10 @@ fn replace(s: &str, pat: &str, rep: &str) -> String {
 /// `BibleFormat.getRawChapter`.
 pub fn raw_chapter_html(b: &Bible, book_name: &str, chapter: &str) -> Result<String> {
     let mut html = format!("<html dir='ltr'><head>{}</head><body>", css(ThemeCss::Main));
-    let x = format!("/XMLBIBLE/BIBLEBOOK[@bname='{book_name}']/CHAPTER[@cnumber={chapter}]/VERS");
+    let x = format!(
+        "/XMLBIBLE/BIBLEBOOK[@bname={}]/CHAPTER[@cnumber={chapter}]/VERS",
+        xpath_literal(book_name)
+    );
     for v in b.doc.select_nodes(b.doc.root(), &x)? {
         html += &format!(
             "<i>{}</i><br/><textarea readonly='readonly'>{}</textarea><br/>",
@@ -232,11 +235,17 @@ pub fn chapter_html(
     let r = b.doc.root();
     let verses = b.doc.select_nodes(
         r,
-        &format!("/XMLBIBLE/BIBLEBOOK[@bname='{book_name}']/CHAPTER[@cnumber={chapter}]/VERS"),
+        &format!(
+            "/XMLBIBLE/BIBLEBOOK[@bname={}]/CHAPTER[@cnumber={chapter}]/VERS",
+            xpath_literal(book_name)
+        ),
     )?;
     let book_node = b
         .doc
-        .select_single_node(r, &format!("/XMLBIBLE/BIBLEBOOK[@bname='{book_name}']"))?
+        .select_single_node(
+            r,
+            &format!("/XMLBIBLE/BIBLEBOOK[@bname={}]", xpath_literal(book_name)),
+        )?
         .ok_or_else(|| Error::Other(format!("no book named {book_name:?}")))?;
     let book_no = b.doc.get_attribute(book_node, "bnumber");
     let mchap = crate::dotnet::int_parse(chapter).unwrap_or(0);
@@ -343,5 +352,17 @@ mod tests {
         assert!(html.contains("<h3>"), "{html}");
         assert!(html.contains("<li><a class=\"linear\" id='1' OnClick=\"chrome.webview.postMessage('8-1-1');return false;\""), "{html}");
         assert!(html.contains("In the days<sup><span onclick=\"chrome.webview.postMessage('LH3117');\" class='lexicon'>H3117</span></sup><span style=\"color:#ff0000\">x</span></a> </a><BLOCKQUOTE>n</BLOCKQUOTE></li></ul></body></html>"), "{html}");
+    }
+}
+
+/// Quotes `s` as an XPath string literal (XPath 1.0 has no escapes).
+fn xpath_literal(s: &str) -> String {
+    if !s.contains('\'') {
+        format!("'{s}'")
+    } else if !s.contains('"') {
+        format!("\"{s}\"")
+    } else {
+        let parts: Vec<String> = s.split('\'').map(|p| format!("'{p}'")).collect();
+        format!("concat({})", parts.join(", \"'\", "))
     }
 }
