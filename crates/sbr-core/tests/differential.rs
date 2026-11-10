@@ -183,3 +183,29 @@ fn thml_matches_original() {
         assert!(last.replace_all(&got, "</CHAPTER>").as_bytes() == want.as_slice());
     }
 }
+
+fn gunzip(path: &str) -> Vec<u8> {
+    use std::io::Read;
+    let mut out = Vec::new();
+    flate2::read::GzDecoder::new(std::fs::File::open(path).unwrap())
+        .read_to_end(&mut out)
+        .unwrap();
+    out
+}
+
+#[test]
+fn opensong_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let src = fixture("kjvplus_ruth_jude.xml");
+    let xmm = gunzip(&fixture("expected/out_16.xmm.gz"));
+    assert!(convert(&src, 1, 16, "out_16.xmmsong.xmm") == xmm);
+    let dir = std::env::temp_dir().join(format!("sbr_test_xmm_{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let input = dir.join("out_16.xmmsong.xmm");
+    std::fs::write(&input, &xmm).unwrap();
+    let want = gunzip(&fixture("expected/out_16_1.xml.gz"));
+    for from in [16, 0] {
+        assert!(convert(input.to_str().unwrap(), from, 1, "out_16_1.xml") == want);
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}
