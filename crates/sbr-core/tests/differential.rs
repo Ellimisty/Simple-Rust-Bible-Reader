@@ -112,3 +112,41 @@ fn mysword_matches_original() {
     }
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+fn strip_dates(b: &[u8]) -> String {
+    let s = String::from_utf8_lossy(b);
+    fancy_regex::Regex::new(r"<date>\d{4}-\d{2}-\d{2}</date>")
+        .unwrap()
+        .replace_all(&s, "<date />")
+        .into_owned()
+}
+
+#[test]
+fn osis_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let osis = fixture("expected/out_4.xml");
+    let got = convert(&osis, 4, 1, "out_4_1.xml");
+    assert_eq!(got, std::fs::read(fixture("expected/out_4_1.xml")).unwrap());
+    let got = convert(&osis, 0, 1, "out_4_1.xml");
+    assert_eq!(got, std::fs::read(fixture("expected/out_4_1.xml")).unwrap());
+
+    // The original's OSIS reference was exported from the excerpt with its
+    // STYLE spans removed, because it fails on unbalanced STYLE markup.
+    let src = std::fs::read_to_string(fixture("kjvplus_ruth_jude.xml")).unwrap();
+    let plain = fancy_regex::Regex::new("</?STYLE[^>]*>")
+        .unwrap()
+        .replace_all(&src, "")
+        .into_owned();
+    let dir = std::env::temp_dir().join(format!("sbr_osis_{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let plain_path = dir.join("plain.xml");
+    std::fs::write(&plain_path, plain).unwrap();
+    let got = convert(plain_path.to_str().unwrap(), 1, 4, "out_4.xml");
+    let want = std::fs::read(fixture("expected/out_4.xml")).unwrap();
+    assert_eq!(strip_dates(&got), strip_dates(&want));
+
+    let styled = convert(&fixture("kjvplus_ruth_jude.xml"), 1, 4, "out_4.xml");
+    assert!(String::from_utf8_lossy(&styled)
+        .contains("<STYLE css=\"color:#808080;font-style:italic\">"));
+    let _ = std::fs::remove_dir_all(&dir);
+}

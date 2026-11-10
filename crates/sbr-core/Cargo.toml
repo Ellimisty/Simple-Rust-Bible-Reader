@@ -15,3 +15,4 @@ thiserror.workspace = true
 rusqlite.workspace = true
 flate2.workspace = true
 zip.workspace = true
+chrono.workspace = true

@@ -270,8 +270,9 @@ impl Indenter<'_> {
                     for &c in ch {
                         self.node(c);
                     }
-                    let had_children = !ch.is_empty();
-                    if had_children && !*self.mixed.last().unwrap() {
+                    // XmlTextWriter.WriteFullEndElement indents the end tag
+                    // outside mixed content, even for an element with no children.
+                    if !*self.mixed.last().unwrap() {
                         self.mixed.pop();
                         self.mixed.push(false);
                         let depth = self.mixed.len() - 2;
