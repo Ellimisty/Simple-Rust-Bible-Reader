@@ -232,3 +232,23 @@ fn verseview_matches_original() {
     }
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn usfx_matches_original() {
+    global_memory::get_mut().newline = "\n".into();
+    let src = fixture("kjvplus_ruth_jude.xml");
+    let got = convert(&src, 1, 28, "out_28.xml");
+    assert_eq!(
+        String::from_utf8_lossy(&got),
+        String::from_utf8_lossy(&std::fs::read(fixture("expected/out_28.xml")).unwrap())
+    );
+    let usfx = fixture("expected/out_28.xml");
+    let want = std::fs::read(fixture("expected/out_28_1.xml")).unwrap();
+    for from in [28, 0] {
+        let got = convert(&usfx, from, 1, "out_28_1.xml");
+        assert_eq!(
+            String::from_utf8_lossy(&got),
+            String::from_utf8_lossy(&want)
+        );
+    }
+}
